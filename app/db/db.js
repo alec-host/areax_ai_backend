@@ -1,11 +1,12 @@
 const Sequelize = require("sequelize");
+const { DATABASE_NAME, DATABASE_USER, DATABASE_PASS, DATABASE_HOST } = require("../constants/app_constants");
 
 const sequelize = new Sequelize(
-   'hello_world_db',
-   'DATABASE_USERNAME',
-   'DATABASE_PASSWORD',
+   DATABASE_NAME,
+   DATABASE_USER,
+   DATABASE_PASS,
     {
-      host: 'DATABASE_HOST',
+      host: DATABASE_HOST,
       dialect: 'mysql'
     }
   );

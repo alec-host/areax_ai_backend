@@ -1,8 +1,8 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const { sequelize } = require('../db/db');
+const { DataTypes } = require('sequelize');
 
 // Define the GeneratedOTP model
-const GeneratedOTP = sequelize.define('GeneratedOTP', {
+module.exports = (sequelize, Sequelize) => {
+    const GeneratedOTP = sequelize.define('GeneratedOTP', {
     _id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -11,6 +11,10 @@ const GeneratedOTP = sequelize.define('GeneratedOTP', {
     phone: {
         type: DataTypes.STRING(20),
         allowNull: false
+    },
+    email: {
+        type: DataTypes.STRING(45),
+        allowNull: true       
     },
     message: {
         type: DataTypes.STRING(160),
@@ -29,13 +33,15 @@ const GeneratedOTP = sequelize.define('GeneratedOTP', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     }
-  },{
-      timestamps: false,
-      tableName: 'tbl_generated_otps'
-  });
-  (async () => {
-    await sequelize.sync();
-    console.log('GeneratedOTP model synchronized with database.');
-  })();
+    },{
+        indexes: [{
+            name: 'idx_generated_otps',
+            unique: false,
+            fields : ['phone','is_sent'] 
+        }],
+        timestamps: false,
+        tableName: 'tbl_generated_otps'
+    });
   
-  module.exports = GeneratedOTP;
+    return GeneratedOTP;
+};

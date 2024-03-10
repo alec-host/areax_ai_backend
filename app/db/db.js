@@ -16,4 +16,6 @@ sequelize.authenticate().then(() => {
    console.error('Unable to connect to the database: ', error);
 });
 
-export {sequelize};
+console.log('DATABASE USER  ',DATABASE_USER);
+
+module.exports = sequelize;

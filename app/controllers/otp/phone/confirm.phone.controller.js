@@ -5,7 +5,7 @@ exports.ConfirmPhone = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
         const { idToken } = req.body;
         try{ 
-            const decodedPhone = await verifyToken(idToken);
+            const decodedPhone = await verifyToken();
             const user_found = await findUserCountByPhone(decodedPhone);
             if(user_found > 0){
                 if(decodedPhone){

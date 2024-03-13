@@ -27,6 +27,14 @@ module.exports = (sequelize, Sequelize) => {
       username: DataTypes.STRING(255),
       display_name: DataTypes.STRING(255),
       profile_picture_url: DataTypes.STRING(255),
+      country: {
+         type: DataTypes.STRING(65),
+         allowNull: true
+      },
+      city: {
+         type: DataTypes.STRING(65),
+         allowNull: true
+      },
       access_token: DataTypes.STRING(255),
       refresh_token: DataTypes.STRING(255),
       token_expiry: DataTypes.DATE,

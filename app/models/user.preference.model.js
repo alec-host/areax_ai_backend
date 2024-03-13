@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize, Sequelize) => {
-    const UserProfile = sequelize.define('UserProfile', {
+    const UserPreference = sequelize.define('UserPreferences', {
         _id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -12,14 +12,6 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         username: {
-            type: DataTypes.STRING(65),
-            allowNull: true
-        },
-        city: {
-            type: DataTypes.STRING(65),
-            allowNull: true
-        },
-        country: {
             type: DataTypes.STRING(65),
             allowNull: true
         },
@@ -52,8 +44,8 @@ module.exports = (sequelize, Sequelize) => {
         }],
         // Define table options
         timestamps: false,
-        tableName: 'tbl_user_profiles'
+        tableName: 'tbl_user_preferences'
     });
     
-    return UserProfile;
+    return UserPreference;
 };

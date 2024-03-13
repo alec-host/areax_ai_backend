@@ -9,7 +9,7 @@ module.exports.confirmGoogleToken = async(idToken) => {
         const payload = verifiedToken.getPayload();
         return payload;
     }catch(error){
-        console.log(error);
+        console.error(error);
         return error;
     }
 };

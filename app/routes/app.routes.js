@@ -12,6 +12,8 @@ const validateEmailController = require("../controllers/otp/email/validate.email
 const confirmEmailController = require("../controllers/otp/email/confirm.email.controller");
 const addPhoneController = require("../controllers/otp/phone/add.phone.controller");
 const confirmPhoneController = require("../controllers/otp/phone/confirm.phone.controller");
+const verifyPhoneController = require("../controllers/otp/phone/verify.phone.controller");
+const modifyUserProfileController = require("../controllers/profile/update.user.profile");
 
 //const confirmOtpController = require("../controllers/");
 
@@ -38,6 +40,8 @@ module.exports = async(app) => {
     router.post('/confirmEmail',confirmEmailController.ConfirmEmail);
     router.post('/addPhone',addPhoneController.AddPhone);
     router.post('/confirmPhone',confirmPhoneController.ConfirmPhone);
+    router.post('/verifyPhone',verifyPhoneController.VerifyPhone);
+    router.patch('/updateProfile',modifyUserProfileController.UpdateProfile);
     /*
     router.patch('/update',uploadFile.fields([{name:'id_file'},{name:'sample_file'}]),testFileUploadController.TestHandleUploads);
     */

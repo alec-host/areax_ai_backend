@@ -6,30 +6,54 @@ exports.AddPhone = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
         const { email,phone } = req.body;
         try{ 
-            const user_found = await findUserCountByEmail(email);
-            if(user_found > 0){
-                const response = await sendVerificationToken(phone);
-                if(response[0]){
-                    await modifyUserByEmail(email,{phone:phone});
-                    res.status(200).json({
-                        success: true,
-                        error: false,
-                        verificationToken: response[1],
-                        message: response[2]
-                    });
+            if(typeof email !== "undefined"){
+                const email_found = await findUserCountByEmail(email);
+                if(email_found > 0){
+                    if(typeof phone !== "undefined"){
+                        if(phone.length >= 9){
+                            const response = await sendVerificationToken(phone);
+                            if(response[0]){
+                                await modifyUserByEmail(email,{phone:phone});
+                                res.status(200).json({
+                                    success: true,
+                                    error: false,
+                                    verificationToken: response[1],
+                                    message: response[2]
+                                });
+                            }else{
+                                res.status(500).json({
+                                    success: false,
+                                    error: true,
+                                    message: request[1]
+                                });
+                            }
+                        }else{
+                            res.status(500).json({
+                                success: false,
+                                error: true,
+                                message: "Invalid phone."
+                            });                          
+                        }
+                    }else{
+                        res.status(500).json({
+                            success: false,
+                            error: true,
+                            message: "Missing: phone not provided."
+                        });                         
+                    }
                 }else{
-                    res.status(500).json({
+                    res.status(404).json({
                         success: false,
                         error: true,
-                        message: request[1]
-                    });
+                        message: 'Email not found'
+                    });               
                 }
             }else{
-                res.status(404).json({
+                res.status(500).json({
                     success: false,
                     error: true,
-                    message: 'Email not found'
-                });               
+                    message: "Missing: email not provided."
+                });                 
             }
         }catch(e){
             if(e){

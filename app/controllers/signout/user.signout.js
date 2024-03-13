@@ -1,22 +1,32 @@
+const { findUserCountByEmail } = require("../user/find.user.count.by.email");
 const { modifyUserByEmail } = require("../user/modify.user.by.email");
 
 exports.SignOut = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
         const { email } = req.body;
         if(typeof email !== "undefined"){
-            const signout = await modifyUserByEmail(email,{is_online:0});
-            if(signout){
-                res.status(200).json({
-                    success: true,
-                    error: false,
-                    message: 'Sign out was successful.'
-                });              
+            email_found = await findUserCountByEmail(email);
+            if(email_found > 0){
+                const signout = await modifyUserByEmail(email,{is_online:0});
+                if(signout){
+                    res.status(200).json({
+                        success: true,
+                        error: false,
+                        message: 'Sign out was successful.'
+                    });              
+                }else{
+                    res.status(404).json({
+                        success: false,
+                        error: true,
+                        message: "Missing: email has to be provided."
+                    });                
+                }
             }else{
                 res.status(404).json({
                     success: false,
                     error: true,
-                    message: "email not found."
-                });                
+                    message: "Email not found."
+                }); 
             }
         }else{
             res.status(500).json({

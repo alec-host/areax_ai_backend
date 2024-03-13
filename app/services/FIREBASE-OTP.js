@@ -10,10 +10,16 @@ module.exports.sendVerificationToken = async(phone) => {
     } 
 };
 
-module.exports.verifyToken = async(idToken) => {
+module.exports.verifyToken = async() => {
     try{
-        const decodedToken = await adminSDK.auth().verifyIdToken(idToken);
-        return [true,decodedToken.phone_number];
+        adminSDK.auth().currentUser.getIdToken(true).then(function(idToken) {
+            const decodedToken = adminSDK.auth().verifyIdToken(idToken);
+            return [true,decodedToken.phone_number];
+          }).catch(function(error) {
+            return [false,error];
+          });
+        
+        
     }catch(error){
         console.error('Error sending verification code:',error);
         return [false,'Error sending verification code:',error];

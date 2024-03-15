@@ -30,7 +30,7 @@ exports.ValidateEmail = async(req,res) => {
                     });                
                 }
             }else{
-                res.status(500).json({
+                res.status(400).json({
                     success: false,
                     error: true,
                     message: "Missing: email is not provided."
@@ -46,7 +46,7 @@ exports.ValidateEmail = async(req,res) => {
             }           
         }
     }else{
-        res.status(500).json({
+        res.status(400).json({
             success: false,
             error: true,
             message: "Missing: request payload not provided."

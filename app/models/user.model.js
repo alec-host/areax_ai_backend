@@ -47,7 +47,11 @@ module.exports = (sequelize, Sequelize) => {
          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
          onUpdate: Sequelize.literal('CURRENT_TIMESTAMP')
       },
-      is_verified: {
+      email_verified: {
+         type: DataTypes.INTEGER,
+         defaultValue: 0
+      },
+      phone_verified: {
          type: DataTypes.INTEGER,
          defaultValue: 0
       },
@@ -63,7 +67,7 @@ module.exports = (sequelize, Sequelize) => {
          indexes: [{
             name: 'idx_areax_users',
             unique: false,
-            fields : ['reference_number','phone','email','is_verified','is_online','is_deleted'] 
+            fields : ['reference_number','phone','email','email_verified','phone_verified','is_online','is_deleted'] 
         }],
          // Define table options
          timestamps: false,

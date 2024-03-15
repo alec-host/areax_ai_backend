@@ -1,3 +1,5 @@
+const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
+const { addLeadPlusSign } = require('../../../utils/add.plus.sign');
 const { findUserCountByEmail } = require("../../user/find.user.count.by.email");
 const { findUserCountByReferenceNumber } = require("../../user/find.user.count.by.reference.no");
 const { modifyUserByEmail } = require("../../user/modify.user.by.email");
@@ -6,18 +8,20 @@ exports.VerifyPhone = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
         const { phone,email,reference_number } = req.body;
         try{
-            const email_found = await findUserCountByEmail(email);
-            const reference_number_found = await findUserCountByReferenceNumber(reference_number);
+            const email_found = await findUserCountByEmail(email)
             if(typeof phone !== "undefined"){
-                if(phone.length >= 9){
+                const formattedPhone = await addLeadPlusSign(phone);
+                const isPhoneValid = phoneUtil.isValidNumber(phoneUtil.parse(formattedPhone));
+                if(isPhoneValid){
                     if(email_found > 0){
+                        const reference_number_found = await findUserCountByReferenceNumber(reference_number);
                         if(reference_number_found > 0){
-                            //await modifyUserByEmail({phone:phone});
+                            await modifyUserByEmail(email,{phone:phone,phone_verified:1});
                             res.status(200).json({
                                 success: true,
                                 error: false,
                                 data: [],
-                                message: 'User information has been updated.'
+                                message: 'Phone has been verified.'
                             });
                         }else{
                             res.status(404).json({
@@ -34,14 +38,14 @@ exports.VerifyPhone = async(req,res) => {
                         });                 
                     }
                 }else{
-                    res.status(200).json({
+                    res.status(400).json({
                         success: false,
                         error: true,
                         message: 'Invalid phone.'
                     });  
                 }
             }else{
-                res.status(500).json({
+                res.status(400).json({
                     success: false,
                     error: true,
                     message: 'Missing: phone has to be provided.'
@@ -57,7 +61,7 @@ exports.VerifyPhone = async(req,res) => {
             }           
         }
     }else{
-        res.status(500).json({
+        res.status(400).json({
             success: false,
             error: true,
             message: "Missing: request payload not provided."

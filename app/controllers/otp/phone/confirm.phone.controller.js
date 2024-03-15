@@ -16,16 +16,16 @@ exports.ConfirmPhone = async(req,res) => {
                         message: 'Phone has been verified.'
                     });
                 }else{
-                    res.status(200).json({
-                        success: true,
-                        error: false,
+                    res.status(400).json({
+                        success: false,
+                        error: true,
                         message: 'Failed to confirm the phone.'
                     });
                 }
             }else{
                 res.status(404).json({
-                    success: true,
-                    error: false,
+                    success: false,
+                    error: true,
                     message: 'Phone not found.'
                 });               
             }
@@ -39,7 +39,7 @@ exports.ConfirmPhone = async(req,res) => {
             }           
         }
     }else{
-        res.status(500).json({
+        res.status(400).json({
             success: false,
             error: true,
             message: "Missing: request payload not provided."

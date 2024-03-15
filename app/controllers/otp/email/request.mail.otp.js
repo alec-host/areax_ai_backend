@@ -1,12 +1,12 @@
+const { sendEmailOtp } = require("../../../services/NODEMAILER");
+const { generateRandomOtp } = require("../../../utils/generate.otp");
 const { findUserCountByEmail } = require("../../user/find.user.count.by.email");
 const { findUserCountByReferenceNumber } = require("../../user/find.user.count.by.reference.no");
-const { modifyUserByEmail } = require("../../user/modify.user.by.email");
-const { confirmMailOtp } = require("../confirm.mail.otp");
-const { purgeOtp } = require("../purge.mail.otp");
+const { saveMailOtp } = require("../save.mail.otp");
 
-exports.ConfirmEmail = async(req,res) => {
+exports.RequestEmailOtp = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
-        const { email, reference_number, otp } = req.body;
+        const { email, reference_number } = req.body;
         try{ 
             if(typeof email !== "undefined"){
                 const email_found = await findUserCountByEmail(email);
@@ -14,30 +14,22 @@ exports.ConfirmEmail = async(req,res) => {
                     if(typeof reference_number !== "undefined"){
                         const reference_number_found = await findUserCountByReferenceNumber(reference_number);
                         if(reference_number_found > 0){
-                            if(typeof otp !== "undefined"){
-                                const hasOtpMatched = await confirmMailOtp(otp,email);
-                                if(hasOtpMatched){
-                                    await purgeOtp(email);
-                                    await modifyUserByEmail(email,{email_verified:1});
-                                    res.status(200).json({
-                                        success: true,
-                                        error: false,
-                                        message: 'OTP confirmed.'
-                                    });
-                                }else{
-                                    res.status(400).json({
-                                        success: false,
-                                        error: true,
-                                        message: 'Invalid OTP.'
-                                    });
-                                }
+                            const otpCode = generateRandomOtp();
+                            const response = await sendEmailOtp(email,otpCode);
+                            if(response[0]){
+                                await saveMailOtp({phone:0,email:email,message:response[2]});
+                                res.status(200).json({
+                                    success: true,
+                                    error: false,
+                                    message: response[1]
+                                }); 
                             }else{
                                 res.status(400).json({
                                     success: false,
                                     error: true,
-                                    message: "Missing: otp must be not provided."
-                                });                         
-                            }
+                                    message: response[1] || 'Invalid token'
+                                });                                
+                            }  
                         }else{
                             res.status(404).json({
                                 success: false,
@@ -63,7 +55,7 @@ exports.ConfirmEmail = async(req,res) => {
                 res.status(400).json({
                     success: false,
                     error: true,
-                    message: "Missing: param(s) must be not provided."
+                    message: "Missing: email must be not provided."
                 });  
             }
         }catch(e){

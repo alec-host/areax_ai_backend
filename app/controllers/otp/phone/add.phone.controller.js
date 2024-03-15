@@ -1,6 +1,8 @@
+const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 const { sendVerificationToken } = require("../../../services/FIREBASE-OTP");
 const { findUserCountByEmail } = require("../../user/find.user.count.by.email");
 const { modifyUserByEmail } = require("../../user/modify.user.by.email");
+const { addLeadPlusSign } = require('../../../utils/add.plus.sign');
 
 exports.AddPhone = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
@@ -10,7 +12,9 @@ exports.AddPhone = async(req,res) => {
                 const email_found = await findUserCountByEmail(email);
                 if(email_found > 0){
                     if(typeof phone !== "undefined"){
-                        if(phone.length >= 9){
+                        const formattedPhone = await addLeadPlusSign(phone);
+                        const isPhoneValid = phoneUtil.isValidNumber(phoneUtil.parse(formattedPhone));
+                        if(isPhoneValid){
                             const response = await sendVerificationToken(phone);
                             if(response[0]){
                                 await modifyUserByEmail(email,{phone:phone});
@@ -21,21 +25,21 @@ exports.AddPhone = async(req,res) => {
                                     message: response[2]
                                 });
                             }else{
-                                res.status(500).json({
+                                res.status(400).json({
                                     success: false,
                                     error: true,
                                     message: request[1]
                                 });
                             }
                         }else{
-                            res.status(500).json({
+                            res.status(400).json({
                                 success: false,
                                 error: true,
                                 message: "Invalid phone."
                             });                          
                         }
                     }else{
-                        res.status(500).json({
+                        res.status(400).json({
                             success: false,
                             error: true,
                             message: "Missing: phone not provided."
@@ -49,7 +53,7 @@ exports.AddPhone = async(req,res) => {
                     });               
                 }
             }else{
-                res.status(500).json({
+                res.status(400).json({
                     success: false,
                     error: true,
                     message: "Missing: email not provided."
@@ -65,7 +69,7 @@ exports.AddPhone = async(req,res) => {
             }           
         }
     }else{
-        res.status(500).json({
+        res.status(400).json({
             success: false,
             error: true,
             message: "Missing: request payload not provided."

@@ -6,7 +6,7 @@ const auth = require("../middleware/auth");
 const uploadFile = require('../middleware/upload');
 */
 
-const googleAuthController = require("../controllers/google/google.auth.controller");
+const googleAuthController = require("../controllers/google-signin/google.auth.controller");
 const signOutController = require("../controllers/signout/user.signout");
 const validateEmailController = require("../controllers/otp/email/validate.email.controller");
 const confirmEmailController = require("../controllers/otp/email/confirm.email.controller");
@@ -14,6 +14,8 @@ const addPhoneController = require("../controllers/otp/phone/add.phone.controlle
 const confirmPhoneController = require("../controllers/otp/phone/confirm.phone.controller");
 const verifyPhoneController = require("../controllers/otp/phone/verify.phone.controller");
 const modifyUserProfileController = require("../controllers/profile/update.user.profile");
+const getProfileController = require('../controllers/profile/get.user.profile');
+const requestEmailOtpController = require('../controllers/otp/email/request.mail.otp');
 
 //const confirmOtpController = require("../controllers/");
 
@@ -42,6 +44,9 @@ module.exports = async(app) => {
     router.post('/confirmPhone',confirmPhoneController.ConfirmPhone);
     router.post('/verifyPhone',verifyPhoneController.VerifyPhone);
     router.patch('/updateProfile',modifyUserProfileController.UpdateProfile);
+    router.get('/getProfile',getProfileController.GetProfile);
+    router.post('/requestEmailOtp',requestEmailOtpController.RequestEmailOtp);
+
     /*
     router.patch('/update',uploadFile.fields([{name:'id_file'},{name:'sample_file'}]),testFileUploadController.TestHandleUploads);
     */

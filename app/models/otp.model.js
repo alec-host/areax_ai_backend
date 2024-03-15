@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 
 // Define the GeneratedOTP model
 module.exports = (sequelize, Sequelize) => {
-    const GeneratedOTP = sequelize.define('GeneratedOTP', {
+    const OTP = sequelize.define('OTP', {
     _id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -43,5 +43,5 @@ module.exports = (sequelize, Sequelize) => {
         tableName: 'tbl_generated_otps'
     });
   
-    return GeneratedOTP;
+    return OTP;
 };

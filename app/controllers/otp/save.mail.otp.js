@@ -5,7 +5,7 @@ const OTPs = db.otps;
 module.exports.saveMailOtp = async(newOtp) => {
     await OTPs.create(newOtp).then(data => {
         return true;  
-    }).catch(err =>{
+    }).catch(err => {
         return false;  
     });
 };

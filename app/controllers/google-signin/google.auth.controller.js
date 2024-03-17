@@ -9,6 +9,7 @@ const { saveMailOtp } = require('../otp/save.mail.otp');
 const { getUserProfileByEmail } = require('../user/get.user.profile.by.email');
 const { generateRandomOtp } = require('../../utils/generate.otp');
 const { accessToken, refreshToken } = require('../../services/JWT');
+const { createUser } = require('../user/create.user');
 
 exports.GoogleUserSignIn = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
@@ -37,6 +38,26 @@ exports.GoogleUserSignIn = async(req,res) => {
                                 const response = await sendEmailOtp(email,otpCode);
                                 if(response[0]){
                                     await saveMailOtp({phone:0,email:email,message:response[2]});
+                                    const resp = await createUser(newUser);
+                                    if(resp[0]){
+                                        await getUserProfileByEmail(email,profileCallback => {
+                                            res.status(201).json({
+                                                success: true,
+                                                error: false,
+                                                data: profileCallback,
+                                                access_token: access_token,
+                                                refresh_token: refresh_token,
+                                                message: resp[1] +' '+ response[1]
+                                            }); 
+                                        });                                               
+                                    }else{
+                                        res.status(500).json({
+                                            success: false,
+                                            error: true,
+                                            message: resp[1]
+                                        });
+                                    }
+                                    /*
                                     Users.create(newUser).then(data => {
                                         const username = data.username;
                                         const email = data.email;
@@ -63,6 +84,7 @@ exports.GoogleUserSignIn = async(req,res) => {
                                             message: err.message || 'Error occurred, user creation has failed.'
                                         });
                                     });
+                                    */
                                 }else{
                                     res.status(400).json({
                                         success: false,

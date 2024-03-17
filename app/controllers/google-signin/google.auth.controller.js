@@ -26,7 +26,7 @@ exports.GoogleUserSignIn = async(req,res) => {
                             const email = payload['email'];
                             const display_name = payload['given_name'];
                             const profile_picture_url = payload['picture'];
-                            const reference_number = 'AX_'+uuidv4();
+                            const reference_number = 'AXS_'+uuidv4();
                             const access_token = accessToken({email:email});
                             const refresh_token = refreshToken({email:email});
                             const newUser = {reference_number,google_user_id,username,display_name,email,profile_picture_url,access_token,refresh_token};

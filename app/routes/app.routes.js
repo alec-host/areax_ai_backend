@@ -6,6 +6,7 @@ const auth = require("../middleware/auth");
 const uploadFile = require('../middleware/upload');
 */
 
+const signUpController = require("../controllers/signup/signup.contoller");
 const googleAuthController = require("../controllers/google-signin/google.auth.controller");
 const signOutController = require("../controllers/signout/user.signout");
 const validateEmailController = require("../controllers/otp/email/validate.email.controller");
@@ -36,6 +37,7 @@ module.exports = async(app) => {
 
     const router = require("express").Router();
 
+    router.post('/signUp',signUpController.UserSignUp);
     router.post('/googleSignIn',googleAuthController.GoogleUserSignIn);
     router.post('/signOut',auth,signOutController.SignOut);
     router.post('/validateEmail',validateEmailController.ValidateEmail);

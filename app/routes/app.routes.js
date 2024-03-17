@@ -37,7 +37,7 @@ module.exports = async(app) => {
     const router = require("express").Router();
 
     router.post('/googleSignIn',googleAuthController.GoogleUserSignIn);
-    router.post('/signOut',signOutController.SignOut);
+    router.post('/signOut',auth,signOutController.SignOut);
     router.post('/validateEmail',validateEmailController.ValidateEmail);
     router.post('/confirmEmail',confirmEmailController.ConfirmEmail);
     router.post('/addPhone',addPhoneController.AddPhone);

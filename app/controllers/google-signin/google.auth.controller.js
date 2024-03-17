@@ -8,6 +8,7 @@ const { sendEmailOtp } = require('../../services/NODEMAILER');
 const { saveMailOtp } = require('../otp/save.mail.otp');
 const { getUserProfileByEmail } = require('../user/get.user.profile.by.email');
 const { generateRandomOtp } = require('../../utils/generate.otp');
+const { accessToken, refreshToken } = require('../../services/JWT');
 
 exports.GoogleUserSignIn = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
@@ -26,7 +27,9 @@ exports.GoogleUserSignIn = async(req,res) => {
                             const display_name = payload['given_name'];
                             const profile_picture_url = payload['picture'];
                             const reference_number = 'AX_'+uuidv4();
-                            const newUser = {reference_number,google_user_id,username,display_name,email,profile_picture_url};
+                            const access_token = accessToken({email:email});
+                            const refresh_token = refreshToken({email:email});
+                            const newUser = {reference_number,google_user_id,username,display_name,email,profile_picture_url,access_token,refresh_token};
 
                             const found_user = await findUserCountByEmail(email);
                             if(found_user === 0){
@@ -49,8 +52,8 @@ exports.GoogleUserSignIn = async(req,res) => {
                                             success: true,
                                             error: false,
                                             data: userProfile,
-                                            access_token: "",
-                                            refresh_token: "",
+                                            access_token: access_token,
+                                            refresh_token: reference_number,
                                             message: 'Authentication successful & '+response[1]
                                         });
                                     }).catch(err => {
@@ -68,14 +71,14 @@ exports.GoogleUserSignIn = async(req,res) => {
                                     });
                                 }               
                             }else{
-                                await modifyUserByEmail(email,{is_online:1});
+                                await modifyUserByEmail(email,{is_online:1,access_token:access_token,refresh_token:refresh_token});
                                 await getUserProfileByEmail(email,callBack => {
                                     res.status(200).json({
                                         success: true,
                                         error: false,
                                         data: callBack,
-                                        access_token: "",
-                                        refresh_token: "",
+                                        access_token: access_token,
+                                        refresh_token: refresh_token,
                                         message: 'Authentication successful'
                                     });
                                 });

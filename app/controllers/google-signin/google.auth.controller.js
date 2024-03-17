@@ -53,7 +53,7 @@ exports.GoogleUserSignIn = async(req,res) => {
                                             error: false,
                                             data: userProfile,
                                             access_token: access_token,
-                                            refresh_token: reference_number,
+                                            refresh_token: refresh_token,
                                             message: 'Authentication successful & '+response[1]
                                         });
                                     }).catch(err => {

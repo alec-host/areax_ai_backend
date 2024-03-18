@@ -1,7 +1,8 @@
+const { MAILER_USERNAME } = require("../constants/app_constants");
+
 module.exports.nomailerBody = (toEmail,code) => {
-const mailOptions =
-        {
-            from: 'devgrowagric@gmail.com',
+    const mailOptions = {
+            from: MAILER_USERNAME,
             to: toEmail,
             subject: 'OTP To Complete Your Signup',
             html: `<html> 

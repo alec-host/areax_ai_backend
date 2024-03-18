@@ -23,17 +23,26 @@ const requestEmailOtpController = require('../controllers/otp/email/request.mail
 
 const error = require("./error/error.routes");
 /**
+ *  
+ * Add auth in the routes below.
  * 
- * TO DO .. 
- * - add auth in the routes below.
- * 
- * Execute JWT method on login & for security save the generated token in a session rather than a localStorage.
+ * Execute JWT method on login & for security sake save token generated in a session rather than on the localStorage.
  * 
  * auth is passed as shown below in a route:
  * 
- * route.post('/createNewUser',auth,createController.MyNewValue);
+ * route.post('/myRoute',auth,myRouteController.ExampleMethod);
  * 
  */
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+*/
 module.exports = async(app) => {
 
     const router = require("express").Router();
@@ -134,13 +143,15 @@ module.exports = async(app) => {
      *         200:
      *           description: Sign out was successful.            
      */
-    router.post('/signOut',auth,signOutController.SignOut);
+    router.post('/signOut',signOutController.SignOut);
     /**
      * @swagger
      * paths:
      *   /api/v1/validateEmail:
      *     post:
      *       summary: Email verification operation
+     *       security:
+     *         - BearerAuth: [] 
      *       requestBody:
      *         required: true
      *         content:
@@ -159,13 +170,15 @@ module.exports = async(app) => {
      *         200:
      *           description: OTP has been sent to the provided email.            
      */
-    router.post('/validateEmail',validateEmailController.ValidateEmail);
+    router.post('/validateEmail',auth,validateEmailController.ValidateEmail);
     /**
      * @swagger
      * paths:
      *   /api/v1/confirmEmail:
      *     post:
      *       summary: Confirm email operation
+     *       security:
+     *         - BearerAuth: []
      *       requestBody:
      *         required: true
      *         content:
@@ -187,8 +200,8 @@ module.exports = async(app) => {
      *         200:
      *           description: OTP confirmed.            
      */
-    router.post('/confirmEmail',confirmEmailController.ConfirmEmail);
-    router.post('/addPhone',addPhoneController.AddPhone);
+    router.post('/confirmEmail',auth,confirmEmailController.ConfirmEmail);
+    router.post('/addPhone',auth,addPhoneController.AddPhone);
     router.post('/confirmPhone',confirmPhoneController.ConfirmPhone);
     /**
      * @swagger
@@ -196,6 +209,8 @@ module.exports = async(app) => {
      *   /api/v1/verifyPhone:
      *     post:
      *       summary: Phone verification operation
+     *       security:
+     *         - BearerAuth: []
      *       requestBody:
      *         required: true
      *         content:
@@ -217,13 +232,15 @@ module.exports = async(app) => {
      *         200:
      *           description: Phone has been verified.            
      */
-    router.post('/verifyPhone',verifyPhoneController.VerifyPhone);
+    router.post('/verifyPhone',auth,verifyPhoneController.VerifyPhone);
     /**
      * @swagger
      * paths:
      *   /api/v1/updateProfile:
      *     patch:
      *       summary: Update user profile with extra information.
+     *       security:
+     *         - BearerAuth: []
      *       requestBody:
      *         required: true
      *         content:
@@ -251,13 +268,15 @@ module.exports = async(app) => {
      *         200:
      *           description: OTP has been sent to the provided email.            
      */
-    router.patch('/updateProfile',modifyUserProfileController.UpdateProfile);
+    router.patch('/updateProfile',auth,modifyUserProfileController.UpdateProfile);
     /**
      * @swagger
      * paths:
      *   /api/v1/getProfile:
      *     get:
      *       summary: Get user profile information.
+     *       security:
+     *         - BearerAuth: []
      *       parameters:
      *         - in: query
      *           name: email
@@ -277,13 +296,15 @@ module.exports = async(app) => {
      *         200:
      *           description: User profile.            
      */
-    router.get('/getProfile',getProfileController.GetProfile);
+    router.get('/getProfile',auth,getProfileController.GetProfile);
     /**
      * @swagger
      * paths:
      *   /api/v1/requestEmailOtp:
      *     post:
      *       summary: Initiate an OTP request via email
+     *       security:
+     *         - BearerAuth: []
      *       requestBody:
      *         required: true
      *         content:
@@ -302,11 +323,12 @@ module.exports = async(app) => {
      *         200:
      *           description: OTP has been sent to the provided email.            
      */
-    router.post('/requestEmailOtp',requestEmailOtpController.RequestEmailOtp);
+    router.post('/requestEmailOtp',auth,requestEmailOtpController.RequestEmailOtp);
 
     /*
     router.patch('/update',uploadFile.fields([{name:'id_file'},{name:'sample_file'}]),testFileUploadController.TestHandleUploads);
     */
+
     app.use("/api/v1",router);
     app.use(error.errorHandler);
 };

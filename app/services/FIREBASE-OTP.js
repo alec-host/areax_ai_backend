@@ -12,14 +12,16 @@ module.exports.sendVerificationToken = async(phone) => {
 
 module.exports.verifyToken = async() => {
     try{
-        adminSDK.auth().currentUser.getIdToken(true).then(function(idToken) {
-            const decodedToken = adminSDK.auth().verifyIdToken(idToken);
-            return [true,decodedToken.phone_number];
+        adminSDK.auth().currentUser.getIdToken(true).then((idToken) => {
+            if(idToken){
+                const decodedToken = adminSDK.auth().verifyIdToken(idToken);
+                return [true,decodedToken.phone_number];
+            }else{
+                return [false,'IdToken cannot be empty'];
+            }
           }).catch(function(error) {
             return [false,error];
           });
-        
-        
     }catch(error){
         console.error('Error sending verification code:',error);
         return [false,'Error sending verification code:',error];

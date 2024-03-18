@@ -10,7 +10,7 @@ const signUpController = require("../controllers/signup/signup.contoller");
 const googleAuthController = require("../controllers/google-signin/google.auth.controller");
 const signInController = require("../controllers/signin/user.signin");
 const signOutController = require("../controllers/signout/user.signout");
-const validateEmailController = require("../controllers/otp/email/validate.email.controller");
+const healthCheckController = require("../health/health.check");
 const confirmEmailController = require("../controllers/otp/email/confirm.email.controller");
 const addPhoneController = require("../controllers/otp/phone/add.phone.controller");
 const confirmPhoneController = require("../controllers/otp/phone/confirm.phone.controller");
@@ -71,7 +71,7 @@ module.exports = async(app) => {
      *                 - email
      *                 - password
      *       responses:
-     *         200:
+     *         201:
      *           description: User account has been created.            
      */
     router.post('/signUp',signUpController.UserSignUp);
@@ -147,9 +147,9 @@ module.exports = async(app) => {
     /**
      * @swagger
      * paths:
-     *   /api/v1/validateEmail:
+     *   /api/v1/ping:
      *     post:
-     *       summary: Email verification operation
+     *       summary: Check health status of the service.
      *       security:
      *         - BearerAuth: [] 
      *       requestBody:
@@ -159,18 +159,15 @@ module.exports = async(app) => {
      *             schema:
      *               type: object
      *               properties:
-     *                 email:
-     *                   type: string
-     *                 reference_number:
+     *                 word:
      *                   type: string
      *               required:
-     *                 - email
-     *                 - reference_number
+     *                 - word
      *       responses:
      *         200:
      *           description: OTP has been sent to the provided email.            
      */
-    router.post('/validateEmail',auth,validateEmailController.ValidateEmail);
+    router.post('/ping',auth,healthCheckController.HealthCheck);
     /**
      * @swagger
      * paths:

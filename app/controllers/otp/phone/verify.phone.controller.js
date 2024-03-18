@@ -1,5 +1,5 @@
-const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
-const { addLeadPlusSign } = require('../../../utils/add.plus.sign');
+const { parsePhoneNumber } = require('libphonenumber-js');
+const { formatPhone } = require('../../../utils/format.phone');
 const { findUserCountByEmail } = require("../../user/find.user.count.by.email");
 const { findUserCountByReferenceNumber } = require("../../user/find.user.count.by.reference.no");
 const { modifyUserByEmail } = require("../../user/modify.user.by.email");
@@ -10,9 +10,9 @@ exports.VerifyPhone = async(req,res) => {
         try{
             const email_found = await findUserCountByEmail(email)
             if(typeof phone !== "undefined"){
-                const formattedPhone = await addLeadPlusSign(phone);
-                const isPhoneValid = phoneUtil.isValidNumber(phoneUtil.parse(formattedPhone));
-                if(isPhoneValid){
+                const formattedPhone = formatPhone(phone);
+                const phoneNumber = parsePhoneNumber(formattedPhone);
+                if(phoneNumber.isValid()){
                     if(email_found > 0){
                         const reference_number_found = await findUserCountByReferenceNumber(reference_number);
                         if(reference_number_found > 0){

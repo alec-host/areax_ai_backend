@@ -268,7 +268,7 @@ module.exports = async(app) => {
      *         200:
      *           description: OTP has been sent to the provided email.            
      */
-    router.patch('/updateProfile',auth,modifyUserProfileController.UpdateProfile);
+    router.patch('/updateProfile',modifyUserProfileController.UpdateProfile);
     /**
      * @swagger
      * paths:

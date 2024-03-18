@@ -1,8 +1,8 @@
-const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
+const { parsePhoneNumber } = require('libphonenumber-js');
 const { sendVerificationToken } = require("../../../services/FIREBASE-OTP");
 const { findUserCountByEmail } = require("../../user/find.user.count.by.email");
 const { modifyUserByEmail } = require("../../user/modify.user.by.email");
-const { addLeadPlusSign } = require('../../../utils/add.plus.sign');
+const { formatPhone } = require('../../../utils/format.phone');
 
 exports.AddPhone = async(req,res) => {
     if(Object.keys(req.body).length !== 0){
@@ -12,9 +12,9 @@ exports.AddPhone = async(req,res) => {
                 const email_found = await findUserCountByEmail(email);
                 if(email_found > 0){
                     if(typeof phone !== "undefined"){
-                        const formattedPhone = await addLeadPlusSign(phone);
-                        const isPhoneValid = phoneUtil.isValidNumber(phoneUtil.parse(formattedPhone));
-                        if(isPhoneValid){
+                        const formattedPhone = formatPhone(phone);
+                        const phoneNumber = parsePhoneNumber(formattedPhone);
+                        if(phoneNumber.isValid()){
                             const response = await sendVerificationToken(phone);
                             if(response[0]){
                                 await modifyUserByEmail(email,{phone:phone});

@@ -1,5 +1,5 @@
-const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
-const { addLeadPlusSign } = require('../../utils/add.plus.sign');
+const { parsePhoneNumber } = require('libphonenumber-js');
+const { formatPhone } = require('../../utils/format.phone');
 const { findUserCountByEmail } = require("../user/find.user.count.by.email");
 const { findUserCountByReferenceNumber } = require("../user/find.user.count.by.reference.no");
 const { getUserProfileByEmail } = require("../user/get.user.profile.by.email");
@@ -15,12 +15,12 @@ module.exports.UpdateProfile = async(req,res) => {
                     const reference_number_found = await findUserCountByReferenceNumber(reference_number);
                     if(reference_number_found > 0){
                         if(typeof phone !== "undefined"){
-                            const formattedPhone = await addLeadPlusSign(phone);
-                            const isPhoneValid = phoneUtil.isValidNumber(phoneUtil.parse(formattedPhone));
-                            if(isPhoneValid){
+                            const formattedPhone = formatPhone(phone);
+                            const phoneNumber = parsePhoneNumber(formattedPhone);
+                            if(phoneNumber.isValid()){
                                 if(typeof country !== "undefined" && typeof city !== "undefined"){
                                     if(country !== "" && city !== ""){
-                                        await modifyUserByEmail(email,{phone,country,city});
+                                        await modifyUserByEmail(email,{phone:formattedPhone,country,city});
                                         await getUserProfileByEmail(email,callBack => {
                                             res.status(200).json({
                                                 success: true,
@@ -51,7 +51,7 @@ module.exports.UpdateProfile = async(req,res) => {
                                 });                       
                             }
                         }else{
-                            res.status(500).json({
+                            res.status(400).json({
                                 success: false,
                                 error: true,
                                 message: "Missing: phone must be provided."

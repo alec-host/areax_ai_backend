@@ -43,7 +43,7 @@ module.exports = async(app) => {
      * paths:
      *   /api/v1/signUp:
      *     post:
-     *       summary: Sign out operation
+     *       summary: Sign out operation - (manual)
      *       requestBody:
      *         required: true
      *         content:
@@ -71,7 +71,7 @@ module.exports = async(app) => {
      * paths:
      *   /api/v1/googleSignIn:
      *     post:
-     *       summary: Google signin operation
+     *       summary: Google sign in operation
      *       requestBody:
      *         required: true
      *         content:
@@ -93,7 +93,7 @@ module.exports = async(app) => {
      * paths:
      *   /api/v1/signIn:
      *     post:
-     *       summary: Sign in operation - manual sign in
+     *       summary: Sign in operation - (manual)
      *       requestBody:
      *         required: true
      *         content:

@@ -4,31 +4,19 @@ const validator = require('validator');
 module.exports.validateEmail = (email) => {
   return new Promise((resolve, reject) => {
     if(!validator.isEmail(email)) {
-      return resolve(false); // Not even a valid format
+      return resolve(false);
     }
     const domain = email.split('@')[1];
     dns.resolveMx(domain, (err, addresses) => {
       if(err) {
         console.error(err);
-        return resolve(false); // DNS error or no MX records found
+        return resolve(false);
       }
       if(addresses && addresses.length > 0) {
-        resolve(true); // MX record exists, so the domain can receive emails
+        resolve(true);
       } else {
-        resolve(false); // No MX records found
+        resolve(false);
       }
     });
   });
 }
-
-// Example usage
-/*
-const email = "test@example.com";
-validateEmailAdvanced(email).then(isValid => {
-  if (isValid) {
-    console.log("The email address is valid and the domain can receive emails.");
-  } else {
-    console.log("The email address is invalid or the domain cannot receive emails.");
-  }
-});
-*/

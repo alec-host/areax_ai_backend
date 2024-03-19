@@ -94,7 +94,7 @@ module.exports = async(app) => {
      *                 - idToken
      *       responses:
      *         200:
-     *           description: Authentication successful.            
+     *           description: Authentication successful, OTP has been sent to the provided email.            
      */
     router.post('/googleSignIn',googleAuthController.GoogleUserSignIn);
     /**
@@ -165,7 +165,7 @@ module.exports = async(app) => {
      *                 - word
      *       responses:
      *         200:
-     *           description: OTP has been sent to the provided email.            
+     *           description: Server is up.            
      */
     router.post('/ping',auth,healthCheckController.HealthCheck);
     /**
@@ -263,7 +263,7 @@ module.exports = async(app) => {
      *                 - reference_number
      *       responses:
      *         200:
-     *           description: OTP has been sent to the provided email.            
+     *           description: User profile has been updated.            
      */
     router.patch('/updateProfile',modifyUserProfileController.UpdateProfile);
     /**
@@ -286,7 +286,7 @@ module.exports = async(app) => {
      *           name: reference_number
      *           schema:
      *             type: string
-     *           description: Unique user reference number.
+     *           description: reference number.
      *           required: true
      *           example: AX_12345667777339392-FRTE000=
      *       responses:

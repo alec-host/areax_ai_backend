@@ -2,7 +2,7 @@ const dns = require('dns');
 const validator = require('validator');
 
 module.exports.validateEmail = (email) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     if(!validator.isEmail(email)) {
       return resolve(false);
     }
@@ -19,4 +19,4 @@ module.exports.validateEmail = (email) => {
       }
     });
   });
-}
+};

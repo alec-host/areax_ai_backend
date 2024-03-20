@@ -4,72 +4,42 @@ const { findUserCountByEmail } = require("../user/find.user.count.by.email");
 const { findUserCountByReferenceNumber } = require("../user/find.user.count.by.reference.no");
 const { getUserProfileByEmail } = require("../user/get.user.profile.by.email");
 const { modifyUserByEmail } = require("../user/modify.user.by.email");
+const { validationResult } = require('express-validator');
 
 module.exports.UpdateProfile = async(req,res) => {
-    if(Object.keys(req.body).length !== 0){
-        const { email,phone,country,city,reference_number } = req.body;
+    const { email,phone,country,city,reference_number } = req.body;
+    const errors = validationResult(req);
+    if(errors.isEmpty()){
         try{
             const email_found = await findUserCountByEmail(email);
             if(email_found > 0){
-                if(typeof reference_number !== "undefined"){
-                    const reference_number_found = await findUserCountByReferenceNumber(reference_number);
-                    if(reference_number_found > 0){
-                        if(typeof phone !== "undefined"){
-                            const formattedPhone = formatPhone(phone);
-                            const phoneNumber = parsePhoneNumber(formattedPhone);
-                            if(phoneNumber.isValid()){
-                                if(typeof country !== "undefined" && typeof city !== "undefined"){
-                                    if(country !== "" && city !== ""){
-                                        await modifyUserByEmail(email,{phone:formattedPhone,country,city});
-                                        await getUserProfileByEmail(email,callBack => {
-                                            res.status(200).json({
-                                                success: true,
-                                                error: false,
-                                                data: callBack,
-                                                message: "User profile has been updated"
-                                            }); 
-                                        });
-                                    }else{
-                                        res.status(400).json({
-                                            success: false,
-                                            error: true,
-                                            message: "Missing: country/city must be provided."
-                                        });  
-                                    }
-                                }else{
-                                    res.status(400).json({
-                                        success: false,
-                                        error: true,
-                                        message: "Missing: country/city must be provided."
-                                    });                              
-                                }
-                            }else{
-                                res.status(400).json({
-                                    success: false,
-                                    error: true,
-                                    message: "Invalid phone."
-                                });                       
-                            }
-                        }else{
-                            res.status(400).json({
-                                success: false,
-                                error: true,
-                                message: "Missing: phone must be provided."
-                            });                    
-                        }
+                const reference_number_found = await findUserCountByReferenceNumber(reference_number);
+                if(reference_number_found > 0){
+                    const formattedPhone = formatPhone(phone);
+                    const phoneNumber = parsePhoneNumber(formattedPhone);
+                    if(phoneNumber.isValid()){
+                        await modifyUserByEmail(email,{phone:formattedPhone,country,city});
+                        await getUserProfileByEmail(email,callBack => {
+                            res.status(200).json({
+                                success: true,
+                                error: false,
+                                data: callBack,
+                                message: "User profile has been updated"
+                            }); 
+                        });
                     }else{
-                        res.status(404).json({
+                        res.status(400).json({
                             success: false,
                             error: true,
-                            message: "Reference number not found."
-                        }); 
+                            message: "Invalid phone."
+                        });                       
                     }
                 }else{
-                    res.status(400).json({
+                    res.status(404).json({
                         success: false,
                         error: true,
-                        message: "Missing: reference number is not provided."
-                    });                
+                        message: "Reference number not found."
+                    }); 
                 }
             }else{
                 res.status(404).json({
@@ -88,10 +58,6 @@ module.exports.UpdateProfile = async(req,res) => {
             }
         }
     }else{
-        res.status(400).json({
-            success: false,
-            error: true,
-            message: "Missing: request payload not provided."
-        }); 
+        res.status(422).json({errors: errors.array()});
     }
 };

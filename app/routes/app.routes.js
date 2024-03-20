@@ -1,10 +1,6 @@
-//const { param } = require("express-validator");
-
 const auth = require("../middleware/auth");
 
-/*
-const uploadFile = require('../middleware/upload');
-*/
+//const uploadFile = require('../middleware/upload');
 
 const signUpController = require("../controllers/signup/signup.contoller");
 const googleAuthController = require("../controllers/google-signin/google.auth.controller");
@@ -13,15 +9,13 @@ const signOutController = require("../controllers/signout/user.signout");
 const healthCheckController = require("../health/health.check");
 const confirmEmailController = require("../controllers/otp/email/confirm.email.controller");
 const addPhoneController = require("../controllers/otp/phone/add.phone.controller");
-const confirmPhoneController = require("../controllers/otp/phone/confirm.phone.controller");
 const verifyPhoneController = require("../controllers/otp/phone/verify.phone.controller");
 const modifyUserProfileController = require("../controllers/profile/update.user.profile");
 const getProfileController = require('../controllers/profile/get.user.profile');
 const requestEmailOtpController = require('../controllers/otp/email/request.mail.otp');
 
-//const confirmOtpController = require("../controllers/");
-
 const error = require("./error/error.routes");
+const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator } = require("../validation/common.validation");
 /**
  *  
  * Add auth in the routes below.
@@ -96,7 +90,7 @@ module.exports = async(app) => {
      *         200:
      *           description: Authentication successful, OTP has been sent to the provided email.            
      */
-    router.post('/googleSignIn',googleAuthController.GoogleUserSignIn);
+    router.post('/googleSignIn',googleSignInValidator,googleAuthController.GoogleUserSignIn);
     /**
      * @swagger
      * paths:
@@ -121,7 +115,7 @@ module.exports = async(app) => {
      *         200:
      *           description: Login was successful.            
      */
-    router.post('/signIn',signInController.SignIn);
+    router.post('/signIn',signInValidator,signInController.SignIn);
     /**
      * @swagger
      * paths:
@@ -143,7 +137,7 @@ module.exports = async(app) => {
      *         200:
      *           description: Sign out was successful.            
      */
-    router.post('/signOut',signOutController.SignOut);
+    router.post('/signOut',signOutValidator,signOutController.SignOut);
     /**
      * @swagger
      * paths:
@@ -167,7 +161,7 @@ module.exports = async(app) => {
      *         200:
      *           description: Server is up.            
      */
-    router.post('/ping',auth,healthCheckController.HealthCheck);
+    router.post('/ping',auth,healthCheckValidator,healthCheckController.HealthCheck);
     /**
      * @swagger
      * paths:
@@ -197,9 +191,8 @@ module.exports = async(app) => {
      *         200:
      *           description: OTP confirmed.            
      */
-    router.post('/confirmEmail',auth,confirmEmailController.ConfirmEmail);
-    router.post('/addPhone',auth,addPhoneController.AddPhone);
-    router.post('/confirmPhone',confirmPhoneController.ConfirmPhone);
+    router.post('/confirmEmail',auth,confirmEmailValidator,confirmEmailController.ConfirmEmail);
+    router.post('/addPhone',auth,addPhoneValidator,addPhoneController.AddPhone);
     /**
      * @swagger
      * paths:
@@ -229,7 +222,7 @@ module.exports = async(app) => {
      *         200:
      *           description: Phone has been verified.            
      */
-    router.post('/verifyPhone',auth,verifyPhoneController.VerifyPhone);
+    router.post('/verifyPhone',auth,verifyPhoneValidator,verifyPhoneController.VerifyPhone);
     /**
      * @swagger
      * paths:
@@ -265,7 +258,7 @@ module.exports = async(app) => {
      *         200:
      *           description: User profile has been updated.            
      */
-    router.patch('/updateProfile',modifyUserProfileController.UpdateProfile);
+    router.patch('/updateProfile',auth,updateProfileValidator,modifyUserProfileController.UpdateProfile);
     /**
      * @swagger
      * paths:
@@ -293,7 +286,7 @@ module.exports = async(app) => {
      *         200:
      *           description: User profile.            
      */
-    router.get('/getProfile',auth,getProfileController.GetProfile);
+    router.get('/getProfile',getProfileValidator,auth,getProfileController.GetProfile);
     /**
      * @swagger
      * paths:
@@ -320,7 +313,7 @@ module.exports = async(app) => {
      *         200:
      *           description: OTP has been sent to the provided email.            
      */
-    router.post('/requestEmailOtp',auth,requestEmailOtpController.RequestEmailOtp);
+    router.post('/requestEmailOtp',auth,requestEmailOtpValidator,requestEmailOtpController.RequestEmailOtp);
 
     /*
     router.patch('/update',uploadFile.fields([{name:'id_file'},{name:'sample_file'}]),testFileUploadController.TestHandleUploads);

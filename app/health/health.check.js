@@ -1,11 +1,14 @@
+const { validationResult } = require("express-validator");
+
 exports.HealthCheck = async(req,res) => {
     const { word } = req.body;
-    if(word){
+    const errors = validationResult(req);
+    if(errors.isEmpty()){
         try{ 
             res.status(200).json({
                 success: true,
                 error: false,
-                message: 'Server is up'
+                message: 'Server is up - you posted word: ' + word
             });          
         }catch(e){
             if(e){
@@ -14,13 +17,9 @@ exports.HealthCheck = async(req,res) => {
                     error: true,
                     message: e?.response?.message || 'Something wrong has happened'
                 });
-            }           
+           }           
         }
     }else{
-        res.status(400).json({
-            success: false,
-            error: true,
-            message: "Missing: request payload not provided."
-        }); 
+        res.status(422).json({errors: errors.array()});
     }
 };

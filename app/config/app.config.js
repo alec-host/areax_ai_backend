@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
+const pathToSwaggerUi = require("swagger-ui-dist").absolutePath();
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(morgan('tiny'));
 
 app.use(express.static('uploads'));
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+app.use("/api-docs", swaggerUi.serve, express.static(pathToSwaggerUi,{index:false}),swaggerUi.setup(openapiSpecification));
 
 //-.routes.
 require("../routes/app.routes")(app);

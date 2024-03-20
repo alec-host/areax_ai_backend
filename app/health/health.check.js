@@ -8,7 +8,7 @@ exports.HealthCheck = async(req,res) => {
             res.status(200).json({
                 success: true,
                 error: false,
-                message: 'Server is up - you posted word: ' + word
+                message: 'Server is up - you posted the word: ' + word
             });          
         }catch(e){
             if(e){

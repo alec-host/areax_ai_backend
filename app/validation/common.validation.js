@@ -1,13 +1,7 @@
 const { body, query } = require("express-validator");
 
 /*
-export const loginValidator = [
-    body('email', 'Invalid does not Empty').not().isEmpty(),
-    body('email', 'Invalid email').isEmail(),
-    body('password', 'The minimum password length is 6 characters').isLength({min: 6}),
-];
-  
-export const createValidator = [
+export const sampleValidator = [
     body('user.username', 'username does not Empty').not().isEmpty(),
     body('user.email', 'Invalid email').isEmail(),
     body('user.age', 'username must be Alphanumeric').isAlphanumeric(),

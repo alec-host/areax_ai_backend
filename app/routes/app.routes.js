@@ -15,7 +15,7 @@ const getProfileController = require('../controllers/profile/get.user.profile');
 const requestEmailOtpController = require('../controllers/otp/email/request.mail.otp');
 
 const error = require("./error/error.routes");
-const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator } = require("../validation/common.validation");
+const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator, signUpValidator } = require("../validation/common.validation");
 /**
  *  
  * Add auth in the routes below.
@@ -68,7 +68,7 @@ module.exports = async(app) => {
      *         201:
      *           description: User account has been created.            
      */
-    router.post('/signUp',signUpController.UserSignUp);
+    router.post('/signUp',signUpValidator,signUpController.UserSignUp);
     /**
      * @swagger
      * paths:

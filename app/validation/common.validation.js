@@ -12,13 +12,14 @@ export const sampleValidator = [
 */
 
 const signUpValidator = [
-    body('username','Missing: name must be checked').not().isEmpty(),
-    body('email','Missing: email must be checked').not().isEmpty(),
-    body('email','Invalid email').isEmail(),
+    body('username', 'Missing: name must be checked').not().isEmpty(),
+    body('email', 'Missing: email must be checked').not().isEmpty(),
+    body('email', 'Invalid email').isEmail(),
+    body('password', 'The minimum password length is 6 characters').isLength({min: 6}),
 ];
 
 const googleSignInValidator = [
-    body('idToken','Missing: idToken must be checked').not().isEmpty(),
+    body('idToken', 'Missing: idToken must be checked').not().isEmpty(),
 ];
 
 const signInValidator = [
@@ -28,8 +29,8 @@ const signInValidator = [
 ];
 
 const signOutValidator = [
-    body('email','Missing: email must be checked').not().isEmpty(),
-    body('email','Invalid email').isEmail(),
+    body('email', 'Missing: email must be checked').not().isEmpty(),
+    body('email', 'Invalid email').isEmail(),
 ];
 
 const healthCheckValidator = [

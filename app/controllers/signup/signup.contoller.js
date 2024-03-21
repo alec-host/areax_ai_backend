@@ -2,7 +2,6 @@ const {v4:uuidv4} = require('uuid');
 const db = require('../../models');
 
 const { findUserCountByEmail } = require('../user/find.user.count.by.email');
-const { modifyUserByEmail } = require('../user/modify.user.by.email');
 const { sendEmailOtp } = require('../../services/NODEMAILER');
 const { saveMailOtp } = require('../otp/save.mail.otp');
 const { getUserProfileByEmail } = require('../user/get.user.profile.by.email');
@@ -65,16 +64,10 @@ exports.UserSignUp = async(req,res) => {
                                             });
                                         }               
                                     }else{
-                                        await modifyUserByEmail(email,{is_online:1,access_token:access_token,refresh_token:refresh_token});
-                                        await getUserProfileByEmail(email,callBack => {
-                                            res.status(200).json({
-                                                success: true,
-                                                error: false,
-                                                data: callBack,
-                                                access_token: access_token,
-                                                refresh_token: refresh_token,
-                                                message: 'Authentication successful'
-                                            });
+                                        res.status(200).json({
+                                            success: false,
+                                            error: true,
+                                            message: 'Email already exists'
                                         });
                                     }
                                 }else{

@@ -1,5 +1,5 @@
 
-const db = require("../../models");
+const { db } = require("../../models");
 
 const OTPs = db.otps;
 

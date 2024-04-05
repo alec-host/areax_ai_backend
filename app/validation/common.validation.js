@@ -82,6 +82,16 @@ const requestEmailOtpValidator  = [
     body('reference_number', 'Reference number must be provided').not().isEmpty(),
 ];
 
+const instagramAuthValidator = [
+    body('email', 'Email cannot be Empty').not().isEmpty(),
+    body('email', 'Invalid email').isEmail(),
+    body('reference_number', 'Reference number must be provided').not().isEmpty(),
+];
+
+const instagramAuthCallbackValidator = [
+    query('code', 'Code must be provided').not().isEmpty(),
+];
+
 module.exports = {
     signUpValidator,
     googleSignInValidator,
@@ -93,5 +103,7 @@ module.exports = {
     verifyPhoneValidator,
     updateProfileValidator,
     getProfileValidator,
-    requestEmailOtpValidator
+    requestEmailOtpValidator,
+    instagramAuthValidator,
+    instagramAuthCallbackValidator
 };

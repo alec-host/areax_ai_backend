@@ -8,7 +8,7 @@ const app = express();
 
 const { APP_SERVER_PORT } = require("../constants/app_constants");
 
-const db = require("../models");
+const { db, db2 } = require("../models");
 const openapiSpecification = require("../open-api/swagger.js.doc");
 
 const PORT = APP_SERVER_PORT;
@@ -22,6 +22,14 @@ db.sequelize.sync()
 })
   .catch((err) => {
   console.log("Failed to sync db: " + err.message);
+});
+
+db2.sequelize.sync()
+  .then(() => {
+    console.log("Synced db2.")
+})
+    .catch((err) => {
+    console.log("Failed to sync db2: " + err.message);
 });
 
 app.use(morgan('tiny'));

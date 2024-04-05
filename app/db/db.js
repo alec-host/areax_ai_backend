@@ -15,11 +15,12 @@ const sequelize = new Sequelize(
          idle: 10000
       }
     }
-  );
+);
+
 sequelize.authenticate().then(() => {
-   console.log('Connection: was successful.');
+   console.log('Connection1: was successful.');
 }).catch((error) => {
-   console.error('Unable to connect to the database: ', error);
+   console.error('Unable to connect to the database 1: ', error);
 });
 
 module.exports = sequelize;

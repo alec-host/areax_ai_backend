@@ -13,9 +13,11 @@ const verifyPhoneController = require("../controllers/otp/phone/verify.phone.con
 const modifyUserProfileController = require("../controllers/profile/update.user.profile");
 const getProfileController = require('../controllers/profile/get.user.profile');
 const requestEmailOtpController = require('../controllers/otp/email/request.mail.otp');
+const instagramAuthController = require('../controllers/instagram/instagram.authorize.controller');
+const instagramAuthCallbackController = require('../controllers/instagram/instagram.profile.controller');
 
 const error = require("./error/error.routes");
-const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator, signUpValidator } = require("../validation/common.validation");
+const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator, signUpValidator, getInstagramProfileValidator, instagramAuthValidator, instagramProfileValidator, instagramAuthCallbackValidator } = require("../validation/common.validation");
 /**
  *  
  * Add auth in the routes below.
@@ -315,10 +317,67 @@ module.exports = async(app) => {
      */
     router.post('/requestEmailOtp',auth,requestEmailOtpValidator,requestEmailOtpController.RequestEmailOtp);
 
+    /**
+     * @swagger
+     * paths:
+     *   /api/v1/auth/instagram:
+     *     post:
+     *       summary: Authorize Instagram user.
+     *       security:
+     *         - BearerAuth: []
+     *       requestBody:
+     *         required: true
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 email:
+     *                   type: string
+     *                 reference_number:
+     *                   type: string
+     *               required:
+     *                 - email
+     *                 - reference_number
+     *       responses:
+     *         200:
+     *           description: Access token granted.            
+     */
+    router.post('/auth/instagram',instagramAuthValidator,instagramAuthController.InstagramAuthorize);
+
+    /**
+     * @swagger
+     * paths:
+     *   /auth/instagram/callback:
+     *     get:
+     *       summary: Get Instagram profile information.
+     *       security:
+     *         - BearerAuth: []
+     *       parameters:
+     *         - in: query
+     *           name: email
+     *           schema:
+     *             type: string
+     *           description: Email of the user.
+     *           required: true
+     *           example: joedoe@myemail.com
+     *         - in: query
+     *           name: reference_number
+     *           schema:
+     *             type: string
+     *           description: reference number.
+     *           required: true
+     *           example: AX_12345667777339392-FRTE000=
+     *       responses:
+     *         200:
+     *           description: User profile.            
+     */
+    router.get('/auth/instagram/callback',instagramAuthCallbackValidator,instagramAuthCallbackController.GetInstagramProfile);
+
     /*
     router.patch('/update',uploadFile.fields([{name:'id_file'},{name:'sample_file'}]),testFileUploadController.TestHandleUploads);
     */
-
+         
     app.use("/api/v1",router);
     app.use(error.errorHandler);
 };

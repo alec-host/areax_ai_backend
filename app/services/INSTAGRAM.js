@@ -4,7 +4,6 @@ const { INSTAGRAM_CLIENT_ID, INSTAGRAM_REDIRECT_URI, INSTAGRAM_CLIENT_SECRET, IN
 
 module.exports.instagramOauthEndpoint = async(operation_type) => {
     try{
-        //authorize|deauthorize
         const endpoint = `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CLIENT_ID}&redirect_uri=${operation_type === "authorize" ? INSTAGRAM_REDIRECT_URI : operation_type === "deauthorize" ? INSTAGRAM_REVOKE_REDIRECT_URI : INSTAGRAM_MEDIA_REDIRECT_URI}&scope=user_profile,user_media&response_type=code`;
         return [true,endpoint];
     }catch(error){
@@ -43,9 +42,9 @@ module.exports.instagramProfile = async(accessToken) => {
 };
 
 module.exports.revokeInstagramAccess = async(userInstagramID,accessToken) => {
-    const url = `https://graph.instagram.com/${userInstagramID}/permissions?access_token=${accessToken}`;
+    const url = `https://graph.instagram.com/v12.0/${userInstagramID}/permissions`;
     try{
-        const response = await axios.delete(url);
+        const response = await axios.delete(url,{params:{access_token: accessToken}});
         console.log('Access revoked:', response.data);
         return [true,response.data];
     }catch(error) {

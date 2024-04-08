@@ -8,6 +8,8 @@ module.exports.insertOrUpdateUserInstagramActivityLog = async(inputInstagramProf
             _profile_data: JSON.stringify(inputInstagramProfile),
             reference_number: reference_number,
             created_at: new Date(),
+            is_revoked: 0,
+            is_deleted: 0,
         });    
         console.log('Instagram profile data inserted or updated successfully.');
     }catch(err){

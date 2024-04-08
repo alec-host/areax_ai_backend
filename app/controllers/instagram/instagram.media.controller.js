@@ -7,38 +7,48 @@ const { getUserInstagramIdByReferenceNo } = require("../user/get.user.instagram.
 
 exports.GetInstagramMedia = async(req,res) => {
     const code = req.query.code;
+    const error = req.query.error;
+    const error_reason = req.query.error_reason;
     const errors = validationResult(req);
     if(errors.isEmpty()){
-        const tokenResponse = await getInstagramToken(code,"media");
-        if(tokenResponse[0]){
-            const reference_number = await getLatestUserInstagramActivityLog();
-            if(reference_number){
-                const userInstagramDetails = await getUserInstagramIdByReferenceNo(reference_number);
-                const userInstagramID = JSON.parse(userInstagramDetails)._profile_data.id;
-                const media = await instagramMedia(userInstagramID,tokenResponse[1]);
-                //-..
-                //await insertOrUpdateUserInstagramActivityLog({_profile_data: profile[1]},reference_number);
-                //-.clean up.
-                await deleteUserInstagramActivityLog(reference_number);
-                res.status(200).json({
-                    success: true,
-                    error: false,
-                    data: media[1],
-                    message: 'Media information'
-                });
+        if(error && error_reason === 'user_denied'){
+            res.status(403).send({
+                success: false,
+                error: true,               
+                message: 'Access denied. Please try again later.'
+            });
+        }else{
+            const tokenResponse = await getInstagramToken(code,"authorize_media");
+            if(tokenResponse[0]){
+                const reference_number = await getLatestUserInstagramActivityLog();
+                if(reference_number){
+                    const userInstagramDetails = await getUserInstagramIdByReferenceNo(reference_number);
+                    const userInstagramID = JSON.parse(userInstagramDetails)._profile_data.id;
+                    const media = await instagramMedia(userInstagramID,tokenResponse[1]);
+                    //-..
+                    //await insertOrUpdateUserInstagramActivityLog({_profile_data: profile[1]},reference_number);
+                    //-.clean up.
+                    await deleteUserInstagramActivityLog(reference_number);
+                    res.status(200).json({
+                        success: true,
+                        error: false,
+                        data: media[1],
+                        message: 'Media information'
+                    });
+                }else{
+                    res.status(404).json({
+                        success: false,
+                        error: true,
+                        message: "Reference number not found."
+                    }); 
+                }
             }else{
-                res.status(404).json({
+                res.status(400).json({
                     success: false,
                     error: true,
-                    message: "Reference number not found."
-                }); 
+                    message: tokenResponse[1]
+                });
             }
-        }else{
-            res.status(400).json({
-                success: false,
-                error: true,
-                message: tokenResponse[1]
-            });
         }
     }else{
         res.status(422).json({errors: errors.array()});

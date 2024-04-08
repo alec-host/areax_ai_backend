@@ -18,9 +18,11 @@ const instagramAuthCallbackController = require('../controllers/instagram/instag
 //const instagramRevokeController = require('../controllers/instagram/instagram.revoke.controller');
 const instagramRevokeCallbackController = require('../controllers/instagram/instagram.revoke.controller');
 const instagramMediaCallbackController = require('../controllers/instagram/instagram.media.controller');
+const instagramDeauthorizeController = require('../controllers/instagram/instagram.deauthorize.controller');
+const instagramDeleteAppController = require('../controllers/instagram/instagram.delete.controller');
 
 const error = require("./error/error.routes");
-const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator, signUpValidator, getInstagramProfileValidator, instagramAuthValidator, instagramProfileValidator, instagramAuthCallbackValidator } = require("../validation/common.validation");
+const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator, signUpValidator, instagramAuthValidator, instagramAuthCallbackValidator } = require("../validation/common.validation");
 /**
  *  
  * Add auth in the routes below.
@@ -366,7 +368,7 @@ module.exports = async(app) => {
      *         200:
      *           description: Access granted.            
      */
-    router.get('/auth/instagram/callback',instagramAuthCallbackValidator,instagramAuthCallbackController.GetInstagramProfile);
+    router.get('/auth/instagram/callback',instagramAuthCallbackController.GetInstagramProfile);
     /**
      * @swagger
      * paths:
@@ -387,7 +389,7 @@ module.exports = async(app) => {
      *         200:
      *           description: Access revoked.            
      */
-    router.get('/revoke/instagram/callback',instagramAuthCallbackValidator,instagramRevokeCallbackController.InstagramRevoke);
+    router.get('/revoke/instagram/callback',instagramRevokeCallbackController.InstagramRevoke);
     /**
      * @swagger
      * paths:
@@ -409,7 +411,28 @@ module.exports = async(app) => {
      *           description: Access revoked.            
      */
     router.get('/media/instagram/callback',instagramAuthCallbackValidator,instagramMediaCallbackController.GetInstagramMedia);
-
+    /**
+     * @swagger
+     * paths:
+     *   /api/v1/deauthorize/instagram:
+     *     post:
+     *       summary: Deauthorize Instagram app.
+     *       responses:
+     *         200:
+     *           description: Deauthorize the Instagram app.            
+     */
+    router.post('/deauthorize/instagram',instagramDeauthorizeController.DeauthorizeInstagramApp);
+    /**
+     * @swagger
+     * paths:
+     *   /api/v1/delete/instagram:
+     *     post:
+     *       summary: Delete Instagram app.
+     *       responses:
+     *         200:
+     *           description: Delete the Instagram app.            
+     */
+    router.post('/delete/instagram',instagramDeleteAppController.DeauthorizeInstagramApp);
 
     /*
     router.patch('/update',uploadFile.fields([{name:'id_file'},{name:'sample_file'}]),testFileUploadController.TestHandleUploads);

@@ -8,21 +8,13 @@ const app = express();
 
 const { APP_SERVER_PORT } = require("../constants/app_constants");
 
-const { db, db2 } = require("../models");
+const { db2 } = require("../models");
 const openapiSpecification = require("../open-api/swagger.js.doc");
 
-const PORT = APP_SERVER_PORT.split(',')[0];
+const PORT = APP_SERVER_PORT.split(',')[1];;
 
 app.use(cors());
 app.use(express.json());
-
-db.sequelize.sync()
-  .then(() => {
-  console.log("Synced db.");
-})
-  .catch((err) => {
-  console.log("Failed to sync db: " + err.message);
-});
 
 db2.sequelize.sync()
   .then(() => {

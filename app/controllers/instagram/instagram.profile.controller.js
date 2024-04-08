@@ -6,28 +6,38 @@ const { deleteUserInstagramActivityLog } = require("../user/instagram/delete.use
 
 exports.GetInstagramProfile = async(req,res) => {
     const code = req.query.code;
+    const error = req.query.error;
+    const error_reason = req.query.error_reason;
     const errors = validationResult(req);
     if(errors.isEmpty()){
-        const resp = await getInstagramToken(code,"authorize");
-        if(resp[0]){
-            const profile = await instagramProfile(resp[1]);
-            const reference_number = await getLatestUserInstagramActivityLog();
-            //-..
-            await insertOrUpdateUserInstagramActivityLog({_profile_data: profile[1]},reference_number);
-            //-.clean up.
-            await deleteUserInstagramActivityLog(reference_number);
-            res.status(200).json({
-                success: true,
-                error: false,
-                data: profile[1],
-                message: 'Profile information'
+        if(error && error_reason === 'user_denied'){
+            res.status(403).send({
+                success: false,
+                error: true,               
+                message: 'Access denied. Please try again later.'
             });
         }else{
-            res.status(400).json({
-                success: false,
-                error: true,
-                message: resp[1]
-            });
+            const tokenResponse = await getInstagramToken(code,"authorize");
+            if(tokenResponse[0]){
+                const profile = await instagramProfile(tokenResponse[1]);
+                const reference_number = await getLatestUserInstagramActivityLog();
+                //-..
+                await insertOrUpdateUserInstagramActivityLog({_profile_data: profile[1]},reference_number);
+                //-.clean up.
+                await deleteUserInstagramActivityLog(reference_number);
+                res.status(200).json({
+                    success: true,
+                    error: false,
+                    data: profile[1],
+                    message: 'Profile information'
+                });
+            }else{
+                res.status(400).json({
+                    success: false,
+                    error: true,
+                    message: tokenResponse[1]
+                });
+            }
         }
     }else{
         res.status(422).json({errors: errors.array()});

@@ -1,4 +1,4 @@
-const { db2 } = require("../../models");
+const { db2 } = require("../../../models");
 
 const InstagramActivityLogs = db2.instagrams.activities;
 

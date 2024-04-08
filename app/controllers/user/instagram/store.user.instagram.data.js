@@ -1,4 +1,4 @@
-const { db2 } = require("../../models");
+const { db2 } = require("../../../models");
 
 const Instagrams = db2.instagrams;
 
@@ -13,9 +13,4 @@ module.exports.insertOrUpdateUserInstagramActivityLog = async(inputInstagramProf
     }catch(err){
         console.error('Error: failed to insert or update. ',err);
     }
-};
-
-module.exports.findUserInstagramActivityLogCountByReferenceNumber = async(reference_number) => {
-    const count = await Instagrams.count({where:{reference_number:reference_number}});
-    return count;  
 };

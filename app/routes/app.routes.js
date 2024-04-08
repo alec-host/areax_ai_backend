@@ -15,6 +15,9 @@ const getProfileController = require('../controllers/profile/get.user.profile');
 const requestEmailOtpController = require('../controllers/otp/email/request.mail.otp');
 const instagramAuthController = require('../controllers/instagram/instagram.authorize.controller');
 const instagramAuthCallbackController = require('../controllers/instagram/instagram.profile.controller');
+//const instagramRevokeController = require('../controllers/instagram/instagram.revoke.controller');
+const instagramRevokeCallbackController = require('../controllers/instagram/instagram.revoke.controller');
+const instagramMediaCallbackController = require('../controllers/instagram/instagram.media.controller');
 
 const error = require("./error/error.routes");
 const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator, signUpValidator, getInstagramProfileValidator, instagramAuthValidator, instagramProfileValidator, instagramAuthCallbackValidator } = require("../validation/common.validation");
@@ -316,7 +319,6 @@ module.exports = async(app) => {
      *           description: OTP has been sent to the provided email.            
      */
     router.post('/requestEmailOtp',auth,requestEmailOtpValidator,requestEmailOtpController.RequestEmailOtp);
-
     /**
      * @swagger
      * paths:
@@ -344,7 +346,6 @@ module.exports = async(app) => {
      *           description: Access token granted.            
      */
     router.post('/auth/instagram',instagramAuthValidator,instagramAuthController.InstagramAuthorize);
-
     /**
      * @swagger
      * paths:
@@ -355,29 +356,65 @@ module.exports = async(app) => {
      *         - BearerAuth: []
      *       parameters:
      *         - in: query
-     *           name: email
+     *           name: code
      *           schema:
      *             type: string
-     *           description: Email of the user.
+     *           description: access token.
      *           required: true
-     *           example: joedoe@myemail.com
-     *         - in: query
-     *           name: reference_number
-     *           schema:
-     *             type: string
-     *           description: reference number.
-     *           required: true
-     *           example: AX_12345667777339392-FRTE000=
+     *           example: 33skdkdkabokv=
      *       responses:
      *         200:
-     *           description: User profile.            
+     *           description: Access granted.            
      */
     router.get('/auth/instagram/callback',instagramAuthCallbackValidator,instagramAuthCallbackController.GetInstagramProfile);
+    /**
+     * @swagger
+     * paths:
+     *   /api/v1/revoke/instagram:
+     *     get:
+     *       summary: Revoke AreaX App from accesss your Instagram a/c.
+     *       security:
+     *         - BearerAuth: []
+   *       parameters:
+     *         - in: query
+     *           name: code
+     *           schema:
+     *             type: string
+     *           description: access token.
+     *           required: true
+     *           example: 33skdkdkabokv=
+     *       responses:
+     *         200:
+     *           description: Access revoked.            
+     */
+    router.get('/revoke/instagram/callback',instagramAuthCallbackValidator,instagramRevokeCallbackController.InstagramRevoke);
+    /**
+     * @swagger
+     * paths:
+     *   /api/v1/media/instagram:
+     *     get:
+     *       summary: Get media from Instagram a/c.
+     *       security:
+     *         - BearerAuth: []
+   *       parameters:
+     *         - in: query
+     *           name: code
+     *           schema:
+     *             type: string
+     *           description: access token.
+     *           required: true
+     *           example: 33skdkdkabokv=
+     *       responses:
+     *         200:
+     *           description: Access revoked.            
+     */
+    router.get('/media/instagram/callback',instagramAuthCallbackValidator,instagramMediaCallbackController.GetInstagramMedia);
+
 
     /*
     router.patch('/update',uploadFile.fields([{name:'id_file'},{name:'sample_file'}]),testFileUploadController.TestHandleUploads);
     */
-         
+
     app.use("/api/v1",router);
     app.use(error.errorHandler);
 };

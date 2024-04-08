@@ -11,7 +11,6 @@ module.exports = (sequelize, Sequelize) => {
     reference_number: {
         type: DataTypes.STRING(65),
         allowNull: false,
-        unique: true,
         collate: 'utf8mb4_general_ci',
     },
     route: {

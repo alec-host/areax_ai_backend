@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize, Sequelize) => {
-    const InstagramUserData = sequelize.define('InstagramUserData', {
+    const InstagramUserDataArchive = sequelize.define('InstagramUserDataArchive', {
     _id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -22,7 +22,6 @@ module.exports = (sequelize, Sequelize) => {
     },
     reference_number: {
         type: DataTypes.STRING(65),
-        unique: true,
         allowNull: false,
         comment: 'FK',
         collate: 'utf8mb4_general_ci',
@@ -63,10 +62,10 @@ module.exports = (sequelize, Sequelize) => {
         },
     ],
     timestamps: false,
-    tableName: 'tbl_ig_data',
+    tableName: 'tbl_ig_data_archive',
     collate: 'utf8mb4_general_ci',
     engine: 'InnoDB',
     });
     
-    return InstagramUserData;
+    return InstagramUserDataArchive;
 };

@@ -28,8 +28,7 @@ exports.GetInstagramProfile = async(req,res) => {
                 res.status(200).json({
                     success: true,
                     error: false,
-                    data: profile[1],
-                    message: 'Profile information'
+                    message: 'Your Instagram profile information has been shared with AreaX'
                 });
             }else{
                 res.status(400).json({

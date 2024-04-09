@@ -3,6 +3,7 @@ const { findUserCountByEmail } = require("../user/find.user.count.by.email");
 const { findUserCountByReferenceNumber } = require("../user/find.user.count.by.reference.no");
 const { instagramOauthEndpoint } = require("../../services/INSTAGRAM");
 const { storeUserInstagramActivityLog } = require("../user/instagram/store.user.instagram.activity.log");
+const { findUserInstagramProfileCountByReferenceNumber } = require("../user/instagram/find.user.instagram.profile.by.reference.no");
 
 exports.InstagramAuthorize = async(req,res) => {
     const { email,reference_number,operation_type } = req.body;
@@ -14,15 +15,43 @@ exports.InstagramAuthorize = async(req,res) => {
             if(reference_number_found > 0){
                 const resp = await instagramOauthEndpoint(operation_type);
                 if(resp[0]){
-                    const route = req.originalUrl;
-                    const created_at = Date.now();
-                    await storeUserInstagramActivityLog({reference_number,route,created_at});
-                    res.status(200).json({
-                        success: true,
-                        error: false,
-                        data: resp[1],
-                        message: 'Redirect url'
-                    });
+                    const accountExist = await findUserInstagramProfileCountByReferenceNumber(reference_number);
+                    if(accountExist === 0){
+                        const route = req.originalUrl;
+                        const created_at = Date.now();
+                        if(operation_type !== "deauthorize"){
+                            await storeUserInstagramActivityLog({reference_number,route,created_at});
+                            res.status(200).json({
+                                success: true,
+                                error: false,
+                                data: resp[1],
+                                message: 'You will shortly be redirected back to your page.'
+                            });
+                        }else{
+                            res.status(401).json({
+                                success: false,
+                                error: false,
+                                data: [],
+                                message: 'You have not allowed AreaX to access your Instagram account.'
+                            });
+                        }
+                    }else{
+                        if(operation_type === "deauthorize"){
+                            res.status(200).json({
+                                success: true,
+                                error: false,
+                                data: resp[1],
+                                message: 'You will shortly be redirected back to your page.'
+                            });                           
+                        }else{
+                            res.status(200).json({
+                                success: false,
+                                error: true,
+                                data:[],
+                                message: 'You have already allowed AreaX to access your Instagram acccount.'
+                            });
+                        }
+                    }
                 }else{
                     res.status(400).json({
                         success: false,

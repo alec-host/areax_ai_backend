@@ -86,6 +86,7 @@ const instagramAuthValidator = [
     body('email', 'Email cannot be Empty').not().isEmpty(),
     body('email', 'Invalid email').isEmail(),
     body('reference_number', 'Reference number must be provided').not().isEmpty(),
+    body('operation_type', 'Operation type must be provided').not().isEmpty(),
 ];
 
 const instagramAuthCallbackValidator = [

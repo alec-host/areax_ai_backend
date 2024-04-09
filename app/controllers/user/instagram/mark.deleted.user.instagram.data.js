@@ -1,6 +1,6 @@
 const { db2 } = require("../../../models");
 
-const Instagrams = db2.instagrams
+const Instagrams = db2.instagrams;
 
 module.exports.userDeletionByReferenceNumber = async(reference_number) => {
     try{

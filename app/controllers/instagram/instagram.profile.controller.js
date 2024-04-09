@@ -24,7 +24,7 @@ exports.GetInstagramProfile = async(req,res) => {
                 //-..
                 await insertOrUpdateUserInstagramActivityLog({_profile_data: profile[1]},reference_number);
                 //-.clean up.
-                await deleteUserInstagramActivityLog(reference_number);
+                await deleteUserInstagramActivityLog(reference_number,"authorize");
                 res.status(200).json({
                     success: true,
                     error: false,

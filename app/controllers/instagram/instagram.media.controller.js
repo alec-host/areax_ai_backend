@@ -21,14 +21,14 @@ exports.GetInstagramMedia = async(req,res) => {
             const tokenResponse = await getInstagramToken(code,"authorize_media");
             if(tokenResponse[0]){
                 const reference_number = await getLatestUserInstagramActivityLog();
-                if(reference_number){
+                if(reference_number && reference_number?.length > 0){
                     const userInstagramDetails = await getUserInstagramIdByReferenceNo(reference_number);
                     const userInstagramID = JSON.parse(userInstagramDetails)._profile_data.id;
                     const media = await instagramMedia(userInstagramID,tokenResponse[1]);
                     //-..
                     //await insertOrUpdateUserInstagramActivityLog({_profile_data: profile[1]},reference_number);
                     //-.clean up.
-                    await deleteUserInstagramActivityLog(reference_number);
+                    await deleteUserInstagramActivityLog(reference_number,"authorize_media");
                     res.status(200).json({
                         success: true,
                         error: false,

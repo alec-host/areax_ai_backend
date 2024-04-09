@@ -18,6 +18,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         collate: 'utf8mb4_general_ci',
     },
+    operation_type: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        collate: 'utf8mb4_general_ci',
+    },   
     created_at: {
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')

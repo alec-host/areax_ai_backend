@@ -16,11 +16,11 @@ exports.InstagramAuthorize = async(req,res) => {
                 const resp = await instagramOauthEndpoint(operation_type);
                 if(resp[0]){
                     const accountExist = await findUserInstagramProfileCountByReferenceNumber(reference_number);
+                    const route = req.originalUrl;
+                    const created_at = Date.now();
                     if(accountExist === 0){
-                        const route = req.originalUrl;
-                        const created_at = Date.now();
                         if(operation_type !== "deauthorize"){
-                            await storeUserInstagramActivityLog({reference_number,route,created_at});
+                            await storeUserInstagramActivityLog({reference_number,route,operation_type,created_at});
                             res.status(200).json({
                                 success: true,
                                 error: false,
@@ -37,6 +37,7 @@ exports.InstagramAuthorize = async(req,res) => {
                         }
                     }else{
                         if(operation_type === "deauthorize"){
+                            await storeUserInstagramActivityLog({reference_number,route,operation_type,created_at});
                             res.status(200).json({
                                 success: true,
                                 error: false,

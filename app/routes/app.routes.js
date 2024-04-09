@@ -15,7 +15,6 @@ const getProfileController = require('../controllers/profile/get.user.profile');
 const requestEmailOtpController = require('../controllers/otp/email/request.mail.otp');
 const instagramAuthController = require('../controllers/instagram/instagram.authorize.controller');
 const instagramAuthCallbackController = require('../controllers/instagram/instagram.profile.controller');
-//const instagramRevokeController = require('../controllers/instagram/instagram.revoke.controller');
 const instagramRevokeCallbackController = require('../controllers/instagram/instagram.revoke.controller');
 const instagramMediaCallbackController = require('../controllers/instagram/instagram.media.controller');
 const instagramDeauthorizeController = require('../controllers/instagram/instagram.deauthorize.controller');

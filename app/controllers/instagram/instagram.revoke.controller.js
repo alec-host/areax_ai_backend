@@ -21,17 +21,17 @@ exports.InstagramRevoke = async(req,res) => {
             const tokenResponse = await getInstagramToken(code,"deauthorize");
             if(tokenResponse[0]){
                 const reference_number = await getLatestUserInstagramActivityLog();
-                if(reference_number){
+                if(reference_number && reference_number?.length > 0){
                     const userInstagramDetails = await getUserInstagramIdByReferenceNo(reference_number);
                     if(userInstagramDetails.length > 0){
                         const response = await userDeletionByReferenceNumber(reference_number);
                         if(response){
                             //-.clean up.
-                            await deleteUserInstagramActivityLog(reference_number);
+                            await deleteUserInstagramActivityLog(reference_number,"deauthorize");
                             res.status(200).json({
                                 success: true,
                                 error: false,
-                                message: 'Instagram access revoked & app deleted.'
+                                message: 'You have already allowed AreaX to access your Instagram acccount.'
                             });
                         }else{
                             res.status(400).json({
@@ -55,10 +55,10 @@ exports.InstagramRevoke = async(req,res) => {
                     }); 
                 }
             }else{
-                res.status(404).json({
+                res.status(400).json({
                     success: false,
                     error: true,
-                    message: "Email not found."
+                    message: tokenResponse[1]
                 });
             }
         }

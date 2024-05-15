@@ -4,7 +4,9 @@
   "description": "This back-end application is meant to power APIs that will serve various areax front-end platform. ",
   "main": "index.js",
   "scripts": {
-    "start": "node app/index.js"
+    "core": "node app/index.js",
+    "hugging-face": "node app/index.hugging.face.js",
+    "start": "concurrently \"npm run core\" \"npm run hugging-face\""
   },
   "keywords": [
     "areax",
@@ -17,8 +19,10 @@
   "author": "alex",
   "license": "ISC",
   "dependencies": {
+    "@gradio/client": "^0.19.2",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
+    "concurrently": "^8.2.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",

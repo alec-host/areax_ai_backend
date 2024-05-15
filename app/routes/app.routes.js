@@ -19,6 +19,7 @@ const instagramRevokeCallbackController = require('../controllers/instagram/inst
 const instagramMediaCallbackController = require('../controllers/instagram/instagram.media.controller');
 const instagramDeauthorizeController = require('../controllers/instagram/instagram.deauthorize.controller');
 const instagramDeleteAppController = require('../controllers/instagram/instagram.delete.controller');
+const huggingFaceController = require('../controllers/chat-hugging-face/hugging-face.controller');
 
 const error = require("./error/error.routes");
 const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator, signUpValidator, instagramAuthValidator, instagramAuthCallbackValidator } = require("../validation/common.validation");
@@ -432,6 +433,17 @@ module.exports = async(app) => {
      *           description: Delete the Instagram app.            
      */
     router.post('/delete/instagram',instagramDeleteAppController.DeauthorizeInstagramApp);
+    /**
+     * @swagger
+     * paths:
+     *   /api/v1/conversation:
+     *     post:
+     *       summary: chat.
+     *       responses:
+     *         200:
+     *           description: Initiates conversation.            
+     */
+    //router.post('/huggingFaceChat',huggingFaceController.ChatHuggingFace);
 
     /*
     router.patch('/update',uploadFile.fields([{name:'id_file'},{name:'sample_file'}]),testFileUploadController.TestHandleUploads);

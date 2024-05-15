@@ -93,6 +93,13 @@ const instagramAuthCallbackValidator = [
     query('code', 'Code must be provided').not().isEmpty(),
 ];
 
+const huggingFaceChatValidator = [
+    body('user_message', 'Message cannot be Empty').not().isEmpty(),
+    body('email', 'Email cannot be Empty').not().isEmpty(),
+    body('email', 'Invalid email').isEmail(),
+    body('reference_number', 'Reference number must be provided').not().isEmpty(),
+];
+
 module.exports = {
     signUpValidator,
     googleSignInValidator,
@@ -106,5 +113,6 @@ module.exports = {
     getProfileValidator,
     requestEmailOtpValidator,
     instagramAuthValidator,
-    instagramAuthCallbackValidator
+    instagramAuthCallbackValidator,
+    huggingFaceChatValidator
 };

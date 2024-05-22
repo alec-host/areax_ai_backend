@@ -16,8 +16,9 @@ AreaX AI Backend is a server-side application designed to handle the backend ope
 To get started with the AreaX AI Backend, follow these steps:
 
 1. Clone the repository:
-   ```sh
+```sh
    git clone https://github.com/alec-host/areax_ai_backend.git
+```
 
 2. Navigate to the projecd areax_ai_backend
 ```bash

@@ -6,6 +6,7 @@ const signUpController = require("../controllers/signup/signup.contoller");
 const googleAuthController = require("../controllers/google-signin/google.auth.controller");
 const signInController = require("../controllers/signin/user.signin");
 const signOutController = require("../controllers/signout/user.signout");
+const signedInStatusController = require("../controllers/signin/user.signed.in.status");
 const healthCheckController = require("../health/health.check");
 const confirmEmailController = require("../controllers/otp/email/confirm.email.controller");
 const addPhoneController = require("../controllers/otp/phone/add.phone.controller");
@@ -19,7 +20,6 @@ const instagramRevokeCallbackController = require('../controllers/instagram/inst
 const instagramMediaCallbackController = require('../controllers/instagram/instagram.media.controller');
 const instagramDeauthorizeController = require('../controllers/instagram/instagram.deauthorize.controller');
 const instagramDeleteAppController = require('../controllers/instagram/instagram.delete.controller');
-const huggingFaceController = require('../controllers/chat-hugging-face/hugging-face.controller');
 
 const error = require("./error/error.routes");
 const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator, signUpValidator, instagramAuthValidator, instagramAuthCallbackValidator } = require("../validation/common.validation");
@@ -128,7 +128,29 @@ module.exports = async(app) => {
      * paths:
      *   /api/v1/signOut:
      *     post:
-     *       summary: Sign out operation
+     *       summary: Sign in operation
+     *       requestBody:
+     *         required: true
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 email:
+     *                   type: string
+     *               required:
+     *                 - email
+     *       responses:
+     *         200:
+     *           description: Sign in was successful.            
+     */
+    router.post('/signOut',signOutValidator,signOutController.SignOut);
+    /**
+     * @swagger
+     * paths:
+     *   /api/v1/signedInStatus:
+     *     post:
+     *       summary: Api to handled to Sign out
      *       requestBody:
      *         required: true
      *         content:
@@ -144,13 +166,13 @@ module.exports = async(app) => {
      *         200:
      *           description: Sign out was successful.            
      */
-    router.post('/signOut',signOutValidator,signOutController.SignOut);
+    router.post('/signedInStatus',auth,requestEmailOtpValidator,signedInStatusController.SignedInStatus);
     /**
      * @swagger
      * paths:
      *   /api/v1/ping:
      *     post:
-     *       summary: Check health status of the service.
+     *       summary: Check user logged in status.
      *       security:
      *         - BearerAuth: [] 
      *       requestBody:
@@ -160,13 +182,15 @@ module.exports = async(app) => {
      *             schema:
      *               type: object
      *               properties:
-     *                 word:
+     *                 email:
      *                   type: string
+     *                 reference_number: string
      *               required:
-     *                 - word
+     *                 - email
+     *                 - reference_number
      *       responses:
      *         200:
-     *           description: Server is up.            
+     *           description: Logged in status.            
      */
     router.post('/ping',auth,healthCheckValidator,healthCheckController.HealthCheck);
     /**
@@ -199,6 +223,7 @@ module.exports = async(app) => {
      *           description: OTP confirmed.            
      */
     router.post('/confirmEmail',auth,confirmEmailValidator,confirmEmailController.ConfirmEmail);
+
     router.post('/addPhone',auth,addPhoneValidator,addPhoneController.AddPhone);
     /**
      * @swagger
@@ -433,17 +458,6 @@ module.exports = async(app) => {
      *           description: Delete the Instagram app.            
      */
     router.post('/delete/instagram',instagramDeleteAppController.DeauthorizeInstagramApp);
-    /**
-     * @swagger
-     * paths:
-     *   /api/v1/conversation:
-     *     post:
-     *       summary: chat.
-     *       responses:
-     *         200:
-     *           description: Initiates conversation.            
-     */
-    //router.post('/huggingFaceChat',huggingFaceController.ChatHuggingFace);
 
     /*
     router.patch('/update',uploadFile.fields([{name:'id_file'},{name:'sample_file'}]),testFileUploadController.TestHandleUploads);

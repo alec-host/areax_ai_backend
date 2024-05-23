@@ -27,7 +27,7 @@ module.exports = async(app) => {
      *         200:
      *           description: Initiates conversation.            
      */
-    router.post('/huggingFaceChat',huggingFaceChatValidator,huggingFaceController.ChatHuggingFace);
+    router.post('/huggingFaceChat',auth,huggingFaceChatValidator,huggingFaceController.ChatHuggingFace);
 
     app.use("/api/chat/v1",router);
     app.use(error.errorHandler);

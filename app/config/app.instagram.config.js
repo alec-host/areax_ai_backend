@@ -12,6 +12,7 @@ const { db2 } = require("../models");
 const openapiSpecification = require("../open-api/swagger.js.doc");
 
 const PORT = APP_SERVER_PORT.split(',')[1];
+console.log(APP_SERVER_PORT.toString(),' ',APP_SERVER_PORT.toString().split(',')[1]);
 
 app.use(cors());
 app.use(express.json());

@@ -6,7 +6,8 @@
   "scripts": {
     "core": "node app/index.js",
     "hugging-face": "node app/index.hugging.face.js",
-    "start": "concurrently \"npm run core\" \"npm run hugging-face\""
+    "gemini": "node app/index.gemini.js",
+    "start": "concurrently \"npm run core\" \"npm run hugging-face\" \"npm run gemini\""
   },
   "keywords": [
     "areax",
@@ -19,6 +20,8 @@
   "author": "alex",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/storage": "^7.11.1",
+    "@google/generative-ai": "^0.12.0",
     "@gradio/client": "^0.19.2",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
@@ -29,6 +32,7 @@
     "express-validator": "^7.0.1",
     "firebase-admin": "^12.0.0",
     "google-auth-library": "^9.6.3",
+    "image-size": "^1.1.1",
     "jsonwebtoken": "^9.0.2",
     "libphonenumber-js": "^1.10.58",
     "morgan": "^1.10.0",
@@ -36,7 +40,9 @@
     "mysql2": "^3.9.2",
     "nodemailer": "^6.9.12",
     "nodemon": "^3.1.0",
+    "openai": "^4.48.2",
     "otp-generator": "^4.0.1",
+    "redis": "^4.6.14",
     "sequelize": "^6.37.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-dist": "^5.12.0",

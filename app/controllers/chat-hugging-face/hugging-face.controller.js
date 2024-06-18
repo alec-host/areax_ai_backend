@@ -13,11 +13,19 @@ exports.ChatHuggingFace = async(req,res) => {
                 const reference_number_found = await findUserCountByReferenceNumber(reference_number);
                 if(reference_number_found > 0){
                     const response = await huggingFaceClient(user_message);
-                    res.status(200).json({
-                        success: true,
-                        error: false,
-                        message: response
-                    });
+                    if(response[0]){
+                        res.status(200).json({
+                            success: true,
+                            error: false,
+                            message: response[1]
+                        });
+                    }else{
+                        res.status(400).json({
+                            success: false,
+                            error: true,
+                            message: response[1]
+                        });
+                    }
                 }else{
                     res.status(404).json({
                         success: false,

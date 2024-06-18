@@ -1,8 +1,10 @@
 const { validationResult } = require("express-validator");
-const { getInstagramToken, instagramProfile } = require("../../services/INSTAGRAM");
+const { getInstagramToken, instagramProfile, getLongLivedAccessToken } = require("../../services/INSTAGRAM");
 const { insertOrUpdateUserInstagramActivityLog } = require("../user/instagram/store.user.instagram.data");
+const { insertOrUpdateUserInstagramToken } = require("../user/instagram/store.user.instagram.token");
 const { getLatestUserInstagramActivityLog } = require("../user/get.user.instagram.activity.log");
 const { deleteUserInstagramActivityLog } = require("../user/instagram/delete.user.instagram.activity.log");
+const { connectToRedis, closeRedisConnection } = require("../../cache/redis");
 
 exports.GetInstagramProfile = async(req,res) => {
     const code = req.query.code;
@@ -21,15 +23,28 @@ exports.GetInstagramProfile = async(req,res) => {
             if(tokenResponse[0]){
                 const profile = await instagramProfile(tokenResponse[1]);
                 const reference_number = await getLatestUserInstagramActivityLog();
-                //-..
-                await insertOrUpdateUserInstagramActivityLog({_profile_data: profile[1]},reference_number);
-                //-.clean up.
-                await deleteUserInstagramActivityLog(reference_number,"authorize");
-                res.status(200).json({
-                    success: true,
-                    error: false,
-                    message: 'Your Instagram profile information has been shared with AreaX'
-                });
+                //-.get long lived token.
+                const longLivedToken = await getLongLivedAccessToken(tokenResponse[1]);
+                if(profile[0]){
+                    //-.log activities.
+                    await insertOrUpdateUserInstagramActivityLog({_profile_data: profile[1]},reference_number);
+                    //-.store token info.
+                    await insertOrUpdateUserInstagramToken(reference_number,tokenResponse[1],longLivedToken);
+                    //-.cache token.
+                    const client = await connectToRedis();
+                    if(client){
+                        if(longLivedToken){
+                            await client.set(reference_number,longLivedToken);
+                        }
+                        await closeRedisConnection(client);
+                    }
+                    //-.clean up.
+                    await deleteUserInstagramActivityLog(reference_number,"authorize");
+                    await deleteUserInstagramActivityLog(reference_number,"deauthorize");
+                    res.redirect(303,'https://www.weaiu.com/instagram?message=Your Instagram profile information has been shared with AreaX');
+                }else{
+                    res.redirect(400,`https://www.weaiu.com/instagram?message=${profile[1]}`);
+                }   
             }else{
                 res.status(400).json({
                     success: false,

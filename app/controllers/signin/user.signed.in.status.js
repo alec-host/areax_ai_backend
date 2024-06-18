@@ -1,6 +1,7 @@
 const { findUserCountByEmail } = require("../user/find.user.count.by.email");
 const { findUserCountByReferenceNumber } = require("../user/find.user.count.by.reference.no");
 const { validationResult } = require("express-validator");
+const { getUserAcessTokenByEmail } = require("../user/get.user.access.token.by.email");
 const { getUserSignedInStatusCountByEmail } = require("../user/get.user.signed.in.status.by.email");
 
 exports.SignedInStatus = async(req,res) => {
@@ -12,17 +13,20 @@ exports.SignedInStatus = async(req,res) => {
             if(email_found > 0){
                 const reference_number_found = await findUserCountByReferenceNumber(reference_number);
                 if(reference_number_found > 0){
-                    const signed_in_status = getUserSignedInStatusCountByEmail(email);
+                    const signed_in_status = await getUserSignedInStatusCountByEmail(email);
                     if(signed_in_status === 1){
+                        const access_token = await getUserAcessTokenByEmail(email);
                         res.status(200).json({
                             success: true,
                             error: false,
+                            data: [{access_token: access_token,reference_number: reference_number}],
                             message: "User is logged in."
                         }); 
                     }else{
                         res.status(400).json({
                             success: false,
                             error: true,
+                            data: [],
                             message: "User is not logged in."
                         });                
                     }

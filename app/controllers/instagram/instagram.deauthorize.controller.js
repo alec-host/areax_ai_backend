@@ -4,7 +4,6 @@ const { deleteUserInstagramActivityLog } = require("../user/instagram/delete.use
 const { userDeletionByReferenceNumber } = require("../user/instagram/mark.deleted.user.instagram.data");
 
 exports.DeauthorizeInstagramApp = async(req,res) => {
-    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ',req.body);
     const errors = validationResult(req);
     if(errors.isEmpty()){
         const reference_number = await getLatestUserInstagramActivityLog();

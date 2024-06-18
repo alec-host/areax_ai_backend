@@ -1,4 +1,4 @@
-const { body, query } = require("express-validator");
+const { body, query, check, param } = require("express-validator");
 
 /*
 export const sampleValidator = [
@@ -100,6 +100,12 @@ const huggingFaceChatValidator = [
     body('reference_number', 'Reference number must be provided').not().isEmpty(),
 ];
 
+const formDataValidator = [
+    check('email', 'Email cannot be Empty').not().isEmpty(),
+    check('email', 'Invalid email').isEmail(), 
+    check('reference_number', 'Reference number must be provided').not().isEmpty(),
+];
+
 module.exports = {
     signUpValidator,
     googleSignInValidator,
@@ -114,5 +120,6 @@ module.exports = {
     requestEmailOtpValidator,
     instagramAuthValidator,
     instagramAuthCallbackValidator,
-    huggingFaceChatValidator
+    huggingFaceChatValidator,
+    formDataValidator
 };

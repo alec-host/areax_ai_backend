@@ -21,5 +21,6 @@ db.otps = require("./otp.model")(sequelize1,Sequelize);
 db2.instagrams = require("./instagram.user.data.model")(sequelize2,Sequelize);
 db2.instagrams.archive = require("./user.instagram.data.archive.model")(sequelize2,Sequelize);
 db2.instagrams.activities = require("./instagram.activity.log.model")(sequelize2,Sequelize);
+db2.instagrams.tokens = require("./instagram.long.lived.token.model")(sequelize2,Sequelize);
 
 module.exports = {db,db2};

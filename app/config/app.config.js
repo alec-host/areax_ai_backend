@@ -12,6 +12,7 @@ const { db, db2 } = require("../models");
 const openapiSpecification = require("../open-api/swagger.js.doc");
 
 const PORT = APP_SERVER_PORT.toString().split(',')[0];
+console.log(APP_SERVER_PORT.toString(),' ',APP_SERVER_PORT.toString().split(',')[0]);
 
 app.use(cors());
 app.use(express.json());
@@ -37,7 +38,6 @@ app.use(morgan('tiny'));
 app.use(express.static('uploads'));
 
 app.use("/api-docs", swaggerUi.serve, express.static(pathToSwaggerUi,{index:false}),swaggerUi.setup(openapiSpecification));
-
 //-.routes.
 require("../routes/app.routes")(app);
 

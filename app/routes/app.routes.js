@@ -1,6 +1,6 @@
 const auth = require("../middleware/auth");
 
-//const uploadFile = require('../middleware/upload');
+const uploadFile = require('../middleware/upload.storage');
 
 const signUpController = require("../controllers/signup/signup.contoller");
 const googleAuthController = require("../controllers/google-signin/google.auth.controller");
@@ -14,6 +14,8 @@ const verifyPhoneController = require("../controllers/otp/phone/verify.phone.con
 const modifyUserProfileController = require("../controllers/profile/update.user.profile");
 const getProfileController = require('../controllers/profile/get.user.profile');
 const requestEmailOtpController = require('../controllers/otp/email/request.mail.otp');
+const refreshTokenController = require('../controllers/google-signin/google.refresh.token.controller');
+const instagramBasicInfoController = require('../controllers/instagram/instagram.basic.info.controller');
 const instagramAuthController = require('../controllers/instagram/instagram.authorize.controller');
 const instagramAuthCallbackController = require('../controllers/instagram/instagram.profile.controller');
 const instagramRevokeCallbackController = require('../controllers/instagram/instagram.revoke.controller');
@@ -23,6 +25,7 @@ const instagramDeleteAppController = require('../controllers/instagram/instagram
 
 const error = require("./error/error.routes");
 const { healthCheckValidator, signInValidator, signOutValidator, googleSignInValidator, addPhoneValidator, verifyPhoneValidator, confirmEmailValidator, updateProfileValidator, getProfileValidator, requestEmailOtpValidator, signUpValidator, instagramAuthValidator, instagramAuthCallbackValidator } = require("../validation/common.validation");
+
 /**
  *  
  * Add auth in the routes below.
@@ -74,7 +77,7 @@ module.exports = async(app) => {
      *       responses:
      *         201:
      *           description: User account has been created.            
-     */
+    */
     router.post('/signUp',signUpValidator,signUpController.UserSignUp);
     /**
      * @swagger
@@ -96,7 +99,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Authentication successful, OTP has been sent to the provided email.            
-     */
+    */
     router.post('/googleSignIn',googleSignInValidator,googleAuthController.GoogleUserSignIn);
     /**
      * @swagger
@@ -121,7 +124,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Login was successful.            
-     */
+    */
     router.post('/signIn',signInValidator,signInController.SignIn);
     /**
      * @swagger
@@ -143,7 +146,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Sign in was successful.            
-     */
+    */
     router.post('/signOut',signOutValidator,signOutController.SignOut);
     /**
      * @swagger
@@ -165,7 +168,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Sign out was successful.            
-     */
+    */
     router.post('/signedInStatus',auth,requestEmailOtpValidator,signedInStatusController.SignedInStatus);
     /**
      * @swagger
@@ -191,7 +194,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Logged in status.            
-     */
+    */
     router.post('/ping',auth,healthCheckValidator,healthCheckController.HealthCheck);
     /**
      * @swagger
@@ -221,7 +224,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: OTP confirmed.            
-     */
+    */
     router.post('/confirmEmail',auth,confirmEmailValidator,confirmEmailController.ConfirmEmail);
 
     router.post('/addPhone',auth,addPhoneValidator,addPhoneController.AddPhone);
@@ -253,7 +256,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Phone has been verified.            
-     */
+    */
     router.post('/verifyPhone',auth,verifyPhoneValidator,verifyPhoneController.VerifyPhone);
     /**
      * @swagger
@@ -289,7 +292,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: User profile has been updated.            
-     */
+    */
     router.patch('/updateProfile',auth,updateProfileValidator,modifyUserProfileController.UpdateProfile);
     /**
      * @swagger
@@ -317,7 +320,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: User profile.            
-     */
+    */
     router.get('/getProfile',getProfileValidator,auth,getProfileController.GetProfile);
     /**
      * @swagger
@@ -344,8 +347,46 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: OTP has been sent to the provided email.            
-     */
+    */
     router.post('/requestEmailOtp',auth,requestEmailOtpValidator,requestEmailOtpController.RequestEmailOtp);
+    /**
+     * @swagger
+     * paths:
+     *   /api/v1/getInstagramBasicUserInfo:
+     *     post:
+     *       summary: Get basic user Instagram info.
+     *       security:
+     *         - BearerAuth: []
+     *       requestBody:
+     *         required: true
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 email:
+     *                   type: string
+     *                 reference_number:
+     *                   type: string
+     *               required:
+     *                 - email
+     *                 - reference_number
+     *       responses:
+     *         200:
+     *           description: Information to be presented by the api include username, account_type, & media_count.            
+    */  
+    router.get('/getInstagramBasicInfo',getProfileValidator,instagramBasicInfoController.GetInstagramBasicInfo);
+    /**
+     * @swagger
+     * paths:
+     *   /api/v1/refreshToken:
+     *     post:
+     *       summary: Generate new token.
+     *       responses:
+     *         200:
+     *           description: Get a new access token.            
+    */
+    router.post('/refreshToken',requestEmailOtpValidator,refreshTokenController.SignInRefreshToken);
     /**
      * @swagger
      * paths:
@@ -371,7 +412,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Access token granted.            
-     */
+    */
     router.post('/auth/instagram',instagramAuthValidator,instagramAuthController.InstagramAuthorize);
     /**
      * @swagger
@@ -392,7 +433,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Access granted.            
-     */
+    */
     router.get('/auth/instagram/callback',instagramAuthCallbackController.GetInstagramProfile);
     /**
      * @swagger
@@ -402,7 +443,7 @@ module.exports = async(app) => {
      *       summary: Revoke AreaX App from accesss your Instagram a/c.
      *       security:
      *         - BearerAuth: []
-   *       parameters:
+     *       parameters:
      *         - in: query
      *           name: code
      *           schema:
@@ -413,7 +454,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Access revoked.            
-     */
+    */
     router.get('/revoke/instagram/callback',instagramRevokeCallbackController.InstagramRevoke);
     /**
      * @swagger
@@ -423,7 +464,7 @@ module.exports = async(app) => {
      *       summary: Get media from Instagram a/c.
      *       security:
      *         - BearerAuth: []
-   *       parameters:
+     *       parameters:
      *         - in: query
      *           name: code
      *           schema:
@@ -434,7 +475,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Access revoked.            
-     */
+    */
     router.get('/media/instagram/callback',instagramAuthCallbackValidator,instagramMediaCallbackController.GetInstagramMedia);
     /**
      * @swagger
@@ -445,7 +486,7 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Deauthorize the Instagram app.            
-     */
+    */
     router.post('/deauthorize/instagram',instagramDeauthorizeController.DeauthorizeInstagramApp);
     /**
      * @swagger
@@ -456,12 +497,8 @@ module.exports = async(app) => {
      *       responses:
      *         200:
      *           description: Delete the Instagram app.            
-     */
-    router.post('/delete/instagram',instagramDeleteAppController.DeauthorizeInstagramApp);
-
-    /*
-    router.patch('/update',uploadFile.fields([{name:'id_file'},{name:'sample_file'}]),testFileUploadController.TestHandleUploads);
     */
+    router.post('/delete/instagram',instagramDeleteAppController.DeauthorizeInstagramApp);
 
     app.use("/api/v1",router);
     app.use(error.errorHandler);

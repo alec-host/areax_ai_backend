@@ -31,18 +31,61 @@ module.exports.getInstagramToken = async(code,operation_type) => {
 };
 
 module.exports.instagramProfile = async(accessToken) => {
-    const url = `https://graph.instagram.com/me?fields=id,username,account_type,media_count,media,name,profile_picture_url,biography,website,followers_count,follows_count&access_token=${accessToken}`;
     try{
-        const profileResponse = await axios.get(url);
-        return [true,profileResponse.data];
-    }catch(error){
-        console.error(error);
-        return [false,error];
+        const response = await axios.get(`https://graph.instagram.com/me`, {
+            params: {
+                fields: 'id,username,account_type,media_count,followers_count',
+                access_token: accessToken
+            }
+        });
+        const userProfile = response.data;
+        return [true,userProfile];
+    }catch (error){
+        console.error('Error fetching Instagram user profile:', error.message);
+        return [false,error.message];
+    }
+};
+
+module.exports.getLongLivedAccessToken = async(shortLivedToken) => {
+    try {
+      const response = await axios.get('https://graph.instagram.com/access_token', {
+        params: {
+            grant_type: 'ig_exchange_token',
+            client_secret: INSTAGRAM_CLIENT_SECRET,
+            access_token: shortLivedToken
+        }
+      });
+  
+      const longLivedToken = response.data.access_token;
+      
+      console.log('Long-lived Access Token:', longLivedToken);
+      return longLivedToken;
+    } catch (error) {
+      console.error('Error exchanging for long-lived access token:', error.response.data);
+      return null;
+    }
+};
+
+module.exports.refreshLongLivedAccessToken = async(longLivedToken) => {
+    try {
+        const response = await axios.get('https://graph.instagram.com/refresh_access_token', {
+            params: {
+                grant_type: 'ig_refresh_token',
+                access_token: longLivedToken
+            }
+        });
+
+        const newLongLivedToken = response.data.access_token;
+        console.log('Refreshed Long-lived Access Token:', newLongLivedToken);
+        return newLongLivedToken;
+    }catch (error){
+        console.error('Error refreshing long-lived access token:', error.response.data);
+        return null;
     }
 };
 
 module.exports.revokeInstagramAccess = async(userInstagramID,accessToken) => {
-    const url = `https://graph.instagram.com/v12.0/${userInstagramID}/permissions`;
+    const url = `https://graph.instagram.com/${userInstagramID}/permissions`;
     try{
         const response = await axios.delete(url,{params:{access_token: accessToken}});
         console.log('Access revoked:', response.data);

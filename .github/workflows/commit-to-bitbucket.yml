@@ -1,44 +1,33 @@
-name: Commit to Bitbucket
+name: Push to Bitbucket
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # or the branch you want to trigger the action
 
 jobs:
-  commit-to-bitbucket:
+  push-to-bitbucket:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Git
-        run: |
-          git config --global user.email "alex@areax.ai"
-          git config --global user.name "Alex"
+    - name: Configure Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+    
+    - name: Add Bitbucket remote
+      run: |
+        git remote add bitbucket https://$BITBUCKET_USERNAME:$BITBUCKET_APP_PASSWORD@bitbucket.org/alex/areax-ai-backend.git
 
-      - name: Get commit message from GitHub
-        id: commit-message
-        run: |
-          COMMIT_MESSAGE=$(git log -n 1 --pretty=format:%s)
-          echo "::set-env::COMMIT_MESSAGE#${{ steps.commit-message.id }}::$COMMIT_MESSAGE::"
+    - name: Commit and push changes
+      run: |
+        git add .
+        git commit -m "Commit message"
+        git push bitbucket main
 
-      - name: Create and encrypt environment file
-        uses: actions/encrypt-action@v1
-        with:
-          FILE_PATH: '.github/workflows/environment.yml'
-          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
-          VALUE_PREFIX: 'env.'
-  
-      - name: Add environment variables to workflow
-        env:
-          COMMIT_MESSAGE: ${{ steps.commit-message.outputs.COMMIT_MESSAGE }}
-        run: |
-          echo "COMMIT_MESSAGE=${{ COMMIT_MESSAGE }}" >> $GITHUB_ENV          
-
-      - name: Commit changes
-        env:
-          COMMIT_MESSAGE: ${{ steps.commit-message.outputs.COMMIT_MESSAGE }}
-        run: |
-          git add .
-          git commit -m "$COMMIT_MESSAGE"
-          git push origin main
+    env:
+      BITBUCKET_USERNAME: ${{ secrets.BITBUCKET_USERNAME }}
+      BITBUCKET_APP_PASSWORD: ${{ secrets.BITBUCKET_APP_PASSWORD }}

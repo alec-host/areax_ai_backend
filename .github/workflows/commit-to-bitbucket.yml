@@ -22,6 +22,19 @@ jobs:
           COMMIT_MESSAGE=$(git log -n 1 --pretty=format:%s)
           echo "::set-env::COMMIT_MESSAGE#${{ steps.commit-message.id }}::$COMMIT_MESSAGE::"
 
+      - name: Create and encrypt environment file
+        uses: actions/encrypt-action@v1
+        with:
+          FILE_PATH: '.github/workflows/environment.yml'
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+          VALUE_PREFIX: 'env.'
+  
+      - name: Add environment variables to workflow
+        env:
+          COMMIT_MESSAGE: ${{ steps.commit-message.outputs.COMMIT_MESSAGE }}
+        run: |
+          echo "COMMIT_MESSAGE=${{ COMMIT_MESSAGE }}" >> $GITHUB_ENV          
+
       - name: Commit changes
         env:
           COMMIT_MESSAGE: ${{ steps.commit-message.outputs.COMMIT_MESSAGE }}

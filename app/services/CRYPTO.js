@@ -6,7 +6,8 @@ module.exports.encrypt = async (data) => {
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(data, salt);
     return hash;
-  } catch (error) {
+  } catch(error) {
+    console.error('AAAAAAAAAAAAAAAAAAAAAAXXXXX ', error);
     return false;
   }
 };

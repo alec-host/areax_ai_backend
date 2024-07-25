@@ -106,6 +106,26 @@ const formDataValidator = [
     check('reference_number', 'Reference number must be provided').not().isEmpty(),
 ];
 
+const tokenIdValidator = [
+    check('email', 'Email cannot be Empty').not().isEmpty(),
+    check('email', 'Invalid email').isEmail(), 
+    check('reference_number', 'Reference number must be provided').not().isEmpty(),
+    check('token_id', 'Token id must be provided').not().isEmpty(),
+];
+
+const blockchainWalletValidator = [
+    body('email', 'Email cannot be Empty').not().isEmpty(),
+    body('email', 'Invalid email').isEmail(), 
+    body('reference_number', 'Reference number must be provided').not().isEmpty(),
+    body('wallet_address', 'Wallet address must be provided').not().isEmpty(),
+    body('private_key', 'Private key must be provided').not().isEmpty(),
+];
+
+const s3BucketValidator = [
+    check('file_name', 'File Name cannot be Empty').not().isEmpty(),
+    check('file_type', 'File Type cannot be Empty').not().isEmpty(),
+];
+
 module.exports = {
     signUpValidator,
     googleSignInValidator,
@@ -121,5 +141,8 @@ module.exports = {
     instagramAuthValidator,
     instagramAuthCallbackValidator,
     huggingFaceChatValidator,
-    formDataValidator
+    formDataValidator,
+    tokenIdValidator,
+    s3BucketValidator,
+    blockchainWalletValidator
 };

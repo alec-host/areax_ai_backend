@@ -1,0 +1,31 @@
+name: Commit to Bitbucket
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  commit-to-bitbucket:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config --global user.email "alex@areax.ai"
+          git config --global user.name "Alex"
+
+      - name: Get commit message from GitHub
+        id: commit-message
+        run: |
+          COMMIT_MESSAGE=$(git log -n 1 --pretty=format:%s)
+          echo "::set-env::COMMIT_MESSAGE#${{ steps.commit-message.id }}::$COMMIT_MESSAGE::"
+
+      - name: Commit changes
+        env:
+          COMMIT_MESSAGE: ${{ steps.commit-message.outputs.COMMIT_MESSAGE }}
+        run: |
+          git add .
+          git commit -m "$COMMIT_MESSAGE"
+          git push origin main

@@ -39,6 +39,8 @@ module.exports = (sequelize, Sequelize) => {
       refresh_token: DataTypes.STRING(255),
       token_expiry: DataTypes.DATE,
       password: DataTypes.STRING(65),
+      token_id: DataTypes.STRING(70),
+      hashed_token_id: DataTypes.STRING(70),
       created_at: {
          type: DataTypes.DATE,
          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
